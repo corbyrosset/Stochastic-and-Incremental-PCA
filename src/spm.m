@@ -21,7 +21,7 @@
   
 function U = spm(X)
     X = X';               % to make things work
-    iters = 5;            % how many times to loop over entire training set
+    iters = 1;            % how many times to loop over entire training set
     t = 0;                % iterate
     n = size(X, 2);       % number of examples
     k = n;                % MUST conform to api: return a dxn matrix

@@ -75,8 +75,8 @@ testAccuracyAll1 = sum(predictedLabelsTest1 == testlabels')/length(predictedLabe
 
 %% output results
 
-fprintf('accuracy of %d-dim subspace on KNN learned by PCA: %f\n', bestKPCA, testAccuracySubspacePCA);
-fprintf('accuracy of %d-dim subspace on KNN learned by SPM: %f\n', bestKSPM, testAccuracySubspaceSPM);
+% fprintf('accuracy of %d-dim subspace on KNN learned by PCA: %f\n', bestKPCA, testAccuracySubspacePCA);
+% fprintf('accuracy of %d-dim subspace on KNN learned by SPM: %f\n', bestKSPM, testAccuracySubspaceSPM);
 fprintf('accuracy of %d-dim subspace on KNN learned by IPCA: %f\n', bestKIPCA, testAccuracySubspaceIPCA);
 
 % fprintf('accuracy of %d-dim subspace on BaggedTree: %d\n', bestK, testAccuracySubspace2);
@@ -121,21 +121,13 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHan
             bestK = k;
         end
     end
-    %plot graphs of accuracy vs dimension of learned subspace
     figure;
     plot(devAc); hold on;
     xlabel('Number of Principle Components');
     ylabel('Accuracy');
-    if (isequal(fcnHandle, @pca))
-       title('Accuracy of KNN trained on subspace learned by PCA'); 
-    elseif (isequal(fcnHandle, @spm))
-        title('Accuracy of KNN trained on subspace learned by SPM'); 
-
-    elseif (isequal(fcnHandle, @ipca))
-        title('Accuracy of KNN trained on subspace learned by IPCA'); 
-    elseif (isequal(fcnHandle, @msg))
-        title('Accuracy of KNN trained on subspace learned by MSG'); 
-    end
+    if (isequal(fcnHandle, @pca)
+        
+    elseif (
     hold off;
     U = U(:, 1:bestK);
     
