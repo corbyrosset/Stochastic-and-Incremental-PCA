@@ -42,6 +42,9 @@ for i = x:length(filesStruct) %first three files are "., .., and .DS_Store"
         end
     end
 end
+train = double(train);
+test = double(test);
+dev = double(dev);
 %construct class labels, one for each subject:
 fprintf('loaded data of size %d by %d\n', ...
     size(train, 1), size(train, 2) + size(test, 2) + size(dev,2));
