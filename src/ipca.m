@@ -8,7 +8,7 @@
 function U = ipca(X)
 
     X = X';               % to make things work
-    iters = 1;            % how many times to loop over entire training set
+    iters = 3;            % how many times to loop over entire training set
     t = 0;                % iterate
     n = size(X, 2);       % number of examples
     k = n;                % MUST conform to api: return a dxn matrix
@@ -20,7 +20,7 @@ function U = ipca(X)
     %randomly initialize C the covariance matrix to USU^T, but NEVER
     %actually store it! only store updates to U and S!
 
-    if(size(X) ~= [77760, 149])           %obviously change for B dataset
+    if(size(X, 1) ~= 32256)           %obviously change for B dataset
        size(X)
        error('IPCA: bad input');
     end
@@ -28,13 +28,9 @@ function U = ipca(X)
         fprintf('----iteration %d\n', i);
         X(:,randperm(size(X,2)));         %good practice to shuffle:
         for t = 1:n; %CHANGE TO n LATER
-            x = X(:, t);
-            x_hat = U'*x;
-            r = x - U*x_hat;
-%             size(x_hat)
-%             size(r)
-%             size(S)
-            
+           x = X(:, t);
+           x_hat = U'*x;
+           r = x - U*x_hat;
             
            %find eigendecomposition of the 2x2 matrix
            r_mag = norm(r);

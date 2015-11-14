@@ -21,7 +21,7 @@
   
 function U = spm(X)
     X = X';               % to make things work
-    iters = 1;            % how many times to loop over entire training set
+    iters = 3;            % how many times to loop over entire training set
     t = 0;                % iterate
     n = size(X, 2);       % number of examples
     k = n;                % MUST conform to api: return a dxn matrix
@@ -30,7 +30,7 @@ function U = spm(X)
     eta = 1;              % learning rate, set to what??
     
     
-    if(size(X) ~= [77760, 149])         %obviously change for B dataset
+    if(size(X, 1) ~= 32256)          %obviously change for B dataset
        size(X)
        error('SPA: bad input');
     end

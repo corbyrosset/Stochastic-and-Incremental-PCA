@@ -19,8 +19,25 @@ function [] = RUNME()
 clear all;
 close all;
 
+bestKPCA = 0;
+bestNPCA = 0;
+testAccuracySubspacePCA = 0;
+bestKSPM = 0;
+bestNSPM = 0;
+testAccuracySubspaceSPM = 0;
+bestKIPCA = 0;
+bestNIPCA = 0;
+testAccuracySubspaceIPCA = 0;
+bestKMSG = 0;
+bestNMSG = 0;
+testAccuracySubspaceMSG = 0;
+
+
 %%make sure to change to src directory!
-[train, trainlabels, test, testlabels] = readData('../data/yalefaces/yalefaces/');
+% [train, trainlabels, test, testlabels] = readData('../data/yalefaces/yalefaces/');
+[train, trainlabels, test, testlabels, dev, devlabels] = ...
+        readYaleBPlusData('../data/CroppedYale/', 20, 20, 60);
+
 
 %% plot training data onto top two principle components to "see" how good
 %covariance matrix is 77760x77760 (45.1GB)
@@ -35,17 +52,17 @@ close all;
 
 %% train KNN model on data projected onto learned subspace
 display('training KNN on subspace learned by built-in pca'); %DONE
-[U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, test, testlabels, @pca);
+[U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @pca);
 
 
 display('training KNN on subspace learned by stochastic power method'); %DONE
-[U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, test, testlabels, @spm);
+[U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @spm);
 
 display('training KNN on subspace learned by incremental pca');
-[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, test, testlabels, @ipca);
+[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @ipca);
 
 display('Dr. Arora wants Stochastic MSG as well :(');
-% [U_k, bestK, bestN, testAccuracySubspace1] = trainAndTestKNN(train, trainlabels, test, testlabels, @msg);
+% [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @msg);
 
 %% train Tree-bagged model with subspaces learned by above algorithms
 % display('training bagged tree on subspace');
@@ -59,7 +76,7 @@ display('Dr. Arora wants Stochastic MSG as well :(');
 %% train and test model on full-dimensional training data for comparison. 
 %MODEL1: KNN: Only hyperparameter is numneighbors
 display('training KNN with ALL dimensions');
-mdlAll1 = fitcknn(train', trainlabels, 'NumNeighbors', 3);
+mdlAll1 = fitcknn(train', trainlabels, 'NumNeighbors', 1);
 %testing:
 [predictedLabelsTest1, ~] = predict(mdlAll1, test');
 testAccuracyAll1 = sum(predictedLabelsTest1 == testlabels')/length(predictedLabelsTest1);
@@ -75,9 +92,9 @@ testAccuracyAll1 = sum(predictedLabelsTest1 == testlabels')/length(predictedLabe
 
 %% output results
 
-fprintf('accuracy of %d-dim subspace on KNN learned by PCA: %f\n', bestKPCA, testAccuracySubspacePCA);
-fprintf('accuracy of %d-dim subspace on KNN learned by SPM: %f\n', bestKSPM, testAccuracySubspaceSPM);
-fprintf('accuracy of %d-dim subspace on KNN learned by IPCA: %f\n', bestKIPCA, testAccuracySubspaceIPCA);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by PCA: %f\n', bestKPCA, bestNPCA, testAccuracySubspacePCA);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by SPM: %f\n', bestKSPM, bestNSPM, testAccuracySubspaceSPM);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by IPCA: %f\n', bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA);
 
 % fprintf('accuracy of %d-dim subspace on BaggedTree: %d\n', bestK, testAccuracySubspace2);
 fprintf('accuracy of entire data on KNN: %f\n', testAccuracyAll1);
@@ -89,10 +106,11 @@ end
 
 %% train model on learned k-dimensional subspace, determine k via cross-val
 function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHandle)
-    maxK      = 75; %must be significantly less than dimensionality
+    maxK      = 200; %must be significantly less than dimensionality
     devAc     = [];
     bestK     = 0;
     bestAcc   = 0;
+    N         = [1, 2, 4, 8, 16];
     maxN      = 10;
     bestN     = 3;   %actually tune this hyperparameter as well
     neighbors = 1;   %neighbors = 1:maxN:
@@ -102,23 +120,25 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHan
         size(U)
         error('U not properly sized');
     end
-    
-    for k = 1:maxK 
-        top_k = U(:, 1:k); %first two columns are top two principle components
-        C = top_k'*train;  %k by n
-        devTest = top_k'*dev;
-        
-        if (mod(k, 25) == 0) 
-             fprintf('----training KNN with k= %d\n', k); 
-        end
-        mdl1 = fitcknn(C', trainlabels, 'NumNeighbors', neighbors);
-        [predictedDevlabels, ~] = predict(mdl1, devTest');
+    for neighbors = 1:length(N);
+        for k = 1:maxK 
+            top_k = U(:, 1:k); %first two columns are top two principle components
+            C = top_k'*train;  %k by n
+            devTest = top_k'*dev;
 
-        acc = sum(predictedDevlabels == devlabels')/length(devlabels);
-        devAc = [devAc acc];
-        if (acc > bestAcc) 
-            bestAcc = acc;
-            bestK = k;
+            if (mod(k, 25) == 0) 
+                 fprintf('----training KNN with k= %d\n', k); 
+            end
+            mdl1 = fitcknn(C', trainlabels, 'NumNeighbors', N(neighbors));
+            [predictedDevlabels, ~] = predict(mdl1, devTest');
+
+            acc = sum(predictedDevlabels == devlabels')/length(devlabels);
+            devAc = [devAc acc];
+            if (acc > bestAcc) 
+                bestAcc = acc;
+                bestK = k;
+                bestN = N(neighbors);
+            end
         end
     end
     %plot graphs of accuracy vs dimension of learned subspace
@@ -150,9 +170,9 @@ function X = candN(X)
 end
 
 function [U_k, bestK, bestN, testAccuracy] = ...
-    trainAndTestKNN(train, trainlabels, test, testlabels, fcnHandle)
+    trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, fcnHandle)
 
-    [U_k, bestK, bestN] = crossVal(train, trainlabels, test, testlabels, fcnHandle);
+    [U_k, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHandle);
     mdlLearned1 = fitcknn((U_k'*train)', trainlabels, 'NumNeighbors', bestN);
     [predictedLabelsTest1, ~] = predict(mdlLearned1,(U_k'*test)');
     testAccuracy = sum(predictedLabelsTest1 == testlabels')/length(predictedLabelsTest1);
