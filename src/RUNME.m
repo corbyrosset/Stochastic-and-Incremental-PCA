@@ -31,6 +31,9 @@ testAccuracySubspaceIPCA = 0;
 bestKMSG = 0;
 bestNMSG = 0;
 testAccuracySubspaceMSG = 0;
+maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
+%because some algorithms run in O(d*k^2) PER EXAMPLE
+
 
 
 %%make sure to change to src directory!
@@ -52,14 +55,14 @@ testAccuracySubspaceMSG = 0;
 
 %% train KNN model on data projected onto learned subspace
 display('training KNN on subspace learned by built-in pca'); %DONE
-[U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @pca);
+[U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
 
 
 display('training KNN on subspace learned by stochastic power method'); %DONE
-[U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @spm);
+% [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
 
 display('training KNN on subspace learned by incremental pca'); %DONE
-[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @ipca);
+[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
 
 display('Dr. Arora wants Stochastic MSG as well :(');
 % [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @msg);
@@ -105,8 +108,7 @@ end
 
 
 %% train model on learned k-dimensional subspace, determine k via cross-val
-function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHandle)
-    maxK      = 200; %must be significantly less than dimensionality
+function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, fcnHandle)
     devAc     = [];
     bestK     = 0;
     bestAcc   = 0;
@@ -115,8 +117,13 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHan
     bestN     = 3;   %actually tune this hyperparameter as well
     neighbors = 1;   %neighbors = 1:maxN:
     
-    U = fcnHandle(train'); %learn the full uncorrelated subspace via algo
-    if (size(U) ~= size(train))
+    if (isequal(fcnHandle, @pca))
+       U = fcnHandle(train'); 
+    else
+       U = fcnHandle(train', maxK); %learn the full uncorrelated subspace via algo
+    end
+    
+    if (size(U, 1) ~= size(train, 1))
         size(U)
         error('U not properly sized');
     end
@@ -177,9 +184,9 @@ function X = candN(X)
 end
 
 function [U_k, bestK, bestN, testAccuracy] = ...
-    trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, fcnHandle)
+    trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, fcnHandle)
 
-    [U_k, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHandle);
+    [U_k, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, fcnHandle);
     mdlLearned1 = fitcknn((U_k'*train)', trainlabels, 'NumNeighbors', bestN);
     [predictedLabelsTest1, ~] = predict(mdlLearned1,(U_k'*test)');
     testAccuracy = sum(predictedLabelsTest1 == testlabels')/length(predictedLabelsTest1);

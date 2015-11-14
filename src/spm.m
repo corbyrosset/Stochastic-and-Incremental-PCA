@@ -19,12 +19,12 @@
 
 
   
-function U = spm(X)
+function U = spm(X, k)
     X = X';               % to make things work
     iters = 3;            % how many times to loop over entire training set
     t = 0;                % iterate
     n = size(X, 2);       % number of examples
-    k = n;                % MUST conform to api: return a dxn matrix
+%     k = 200;              % MUST conform to api: return a dxn matrix
     d = size(X, 1);       % dimensionality
     U = orth(rand(d, k)); % randomly init learned subspace
     eta = 1;              % learning rate, set to what??

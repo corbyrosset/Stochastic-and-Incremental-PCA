@@ -35,17 +35,13 @@ function U = ipca(X, k)
             
            %find eigendecomposition of the 2x2 matrix
            r_mag = norm(r);
-           Q = [S + x_hat*x_hat', r_mag*x_hat; r_mag*x_hat', r_mag^2];
            if (r_mag == 0)
               error('r_mag is zero, all black column?'); 
            end
            if (sum(sum(isnan(Q))))
-               error('Q has NaNs in it');
+               error('Q 
            end
-           if (sum(sum(isinf(Q))))
-               error('Q has Infs in it');
-           end
-           
+           Q = [S + x_hat*x_hat', r_mag*x_hat; r_mag*x_hat', r_mag^2];
            [U_tilde, S_prime] = eig(Q);
            
            %update S and U...should be right?

@@ -27,6 +27,11 @@ for i = x:length(filesStruct) %first three files are "., .., and .DS_Store"
     for j = x:length(subDir)
         file = strcat(directory,'/',filesStruct(i).name,'/',subDir(j).name);
         if ~isempty(strfind(file, '.pgm')) &isempty(strfind(file, 'Ambient'))
+            axis1 = str2num(subDir(j).name(14:16));
+            axis2 = str2num(subDir(j).name(19:20));
+            if (axis1 >= 90) || (axis2 >= 110) 
+               continue
+            end
             y = rand(1);
             y = y*100;
             if y < devpercent 
