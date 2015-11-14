@@ -24,6 +24,7 @@ function U = ipca(X)
        size(X)
        error('IPCA: bad input');
     end
+    h = waitbar(0,'Initializing waitbar...');
     for i = 1:iters
         fprintf('----iteration %d\n', i);
         X(:,randperm(size(X,2)));         %good practice to shuffle:
@@ -36,12 +37,16 @@ function U = ipca(X)
            r_mag = norm(r);
            Q = [S + x_hat*x_hat', r_mag*x_hat; r_mag*x_hat', r_mag^2];
            [U_tilde, S_prime] = eig(Q);
+           
+           %update S and U...should be right?
            S = S_prime(1:(end-1), 1:(end-1));
            U = [U, r/r_mag]*U_tilde;
            if (size(U, 1) > k)
                %truncate
                U = U(:, 1:k);
            end
+           waitbar((n*(i-1) + t)/(iters*n),h)
+
           
             
         end

@@ -34,6 +34,7 @@ function U = spm(X)
        size(X)
        error('SPA: bad input');
     end
+    h = waitbar(0,'Initializing waitbar...');
     for i = 1:iters
         fprintf('----iteration %d\n', i);
         X(:,randperm(size(X,2)));         %good practice to shuffle:
@@ -42,6 +43,7 @@ function U = spm(X)
             x = X(:, t);
             U = U + eta*x*(x'*U);
             [U,~] = qr(U, 0);             %do more sparingly...
+            waitbar((n*(i-1) + t)/(iters*n),h)
         end
         
     end

@@ -52,13 +52,13 @@ testAccuracySubspaceMSG = 0;
 
 %% train KNN model on data projected onto learned subspace
 display('training KNN on subspace learned by built-in pca'); %DONE
-[U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @pca);
+% [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @pca);
 
 
 display('training KNN on subspace learned by stochastic power method'); %DONE
-[U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @spm);
+% [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @spm);
 
-display('training KNN on subspace learned by incremental pca');
+display('training KNN on subspace learned by incremental pca'); %DONE
 [U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @ipca);
 
 display('Dr. Arora wants Stochastic MSG as well :(');
