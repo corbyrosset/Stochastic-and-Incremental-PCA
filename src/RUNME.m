@@ -52,11 +52,11 @@ testAccuracySubspaceMSG = 0;
 
 %% train KNN model on data projected onto learned subspace
 display('training KNN on subspace learned by built-in pca'); %DONE
-% [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @pca);
+[U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @pca);
 
 
 display('training KNN on subspace learned by stochastic power method'); %DONE
-% [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @spm);
+[U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @spm);
 
 display('training KNN on subspace learned by incremental pca'); %DONE
 [U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @ipca);
@@ -110,7 +110,7 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHan
     devAc     = [];
     bestK     = 0;
     bestAcc   = 0;
-    N         = [1, 2, 4, 8, 16];
+    N         = [1]; %[1, 2, 4, 8, 16];  %JUST USE K = 1 BC THAT'S BEST
     maxN      = 10;
     bestN     = 3;   %actually tune this hyperparameter as well
     neighbors = 1;   %neighbors = 1:maxN:
@@ -142,21 +142,28 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, fcnHan
         end
     end
     %plot graphs of accuracy vs dimension of learned subspace
-    figure;
+    fig = figure;
     plot(devAc); hold on;
     xlabel('Number of Principle Components');
     ylabel('Accuracy');
     if (isequal(fcnHandle, @pca))
        title('Accuracy of KNN trained on subspace learned by PCA'); 
+       hold off;
+       print(fig,'cross-val-PCA','-dpng');
     elseif (isequal(fcnHandle, @spm))
-        title('Accuracy of KNN trained on subspace learned by SPM'); 
+        title('Accuracy of KNN trained on subspace learned by SPM');
+        hold off;
+        print(fig,'cross-val-SPM','-dpng');
 
     elseif (isequal(fcnHandle, @ipca))
         title('Accuracy of KNN trained on subspace learned by IPCA'); 
+        hold off;
+        print(fig,'cross-val-IPCA','-dpng');
     elseif (isequal(fcnHandle, @msg))
-        title('Accuracy of KNN trained on subspace learned by MSG'); 
-    end
-    hold off;
+        title('Accuracy of KNN trained on subspace learned by MSG');
+        hold off;
+        print(fig,'cross-val-MSG','-dpng');
+    end        
     U = U(:, 1:bestK);
     
 end
