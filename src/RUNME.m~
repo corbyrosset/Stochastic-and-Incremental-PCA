@@ -54,18 +54,25 @@ maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
 
 
 %% train KNN model on data projected onto learned subspace
+train = (1/255)*train;
+dev = (1/255)*dev;
+test = (1/255)*test;
 display('training KNN on subspace learned by built-in pca'); %DONE
-[U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
+% [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
 
 
 display('training KNN on subspace learned by stochastic power method'); %DONE
-[U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
+%  [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
 
 display('training KNN on subspace learned by incremental pca'); %DONE
-[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
+%[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
 
-display('Dr. Arora wants Stochastic MSG as well :(');
-% [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @msg);
+display('training KNN on subspace learned by MSG'); %DONE
+% [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @msg);
+
+display('training KNN on a SPARSE subspace learned by SPCA');
+[U_k, bestKSPCA, bestNSPCA, testAccuracySubspaceSPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spca);
+
 
 %% train Tree-bagged model with subspaces learned by above algorithms
 % display('training bagged tree on subspace');
@@ -116,9 +123,32 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, 
     maxN      = 10;
     bestN     = 3;   %actually tune this hyperparameter as well
     neighbors = 1;   %neighbors = 1:maxN:
+    d         = size(train', 2);
     
     if (isequal(fcnHandle, @pca))
        U = fcnHandle(train'); 
+    elseif (isequal(fcnHandle, @spca))
+        card_min = 0.001;
+        card_max = 0.6;
+        U = [];
+        lastVariance = inf;
+        trainTemp = train';
+        %must use deflation k times to find the k-dimensional maximal
+        %variance subspace...
+        for i = 1:maxK
+            [~, lambda, u_k]= sparsePCA(train',1200); %round(card_min*d),round(card_max*d), 1);
+%             if (var > lastVariance)
+%                 var
+%                 lastVariance
+%                 error('variances are non-decreasing in inverse power itereration');
+%             end
+            lastVariance = var;
+            trainTemp = trainTemp - lambda*u_k*u_k';
+            U(:, i) = u_k;
+            fprintf('found %dth 
+        end
+        size(U)
+        
     else
        U = fcnHandle(train', maxK); %learn the full uncorrelated subspace via algo
     end

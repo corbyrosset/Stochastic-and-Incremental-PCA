@@ -21,7 +21,7 @@
   
 function U = spm(X, k)
     X = X';               % to make things work
-    iters = 3;            % how many times to loop over entire training set
+    iters = 5;            % how many times to loop over entire training set
     t = 0;                % iterate
     n = size(X, 2);       % number of examples
 %     k = 200;              % MUST conform to api: return a dxn matrix
@@ -34,19 +34,24 @@ function U = spm(X, k)
        size(X)
        error('SPA: bad input');
     end
-    h = waitbar(0,'Initializing waitbar...');
+    h = waitbar(0,'Waiting for Stochasic Power Method...');
     for i = 1:iters
         fprintf('----iteration %d\n', i);
         X(:,randperm(size(X,2)));         %good practice to shuffle:
         for t = 1:n;
-            eta = 1/nthroot(i*n + t, 3);  %perhaps?
+           eta = 1/nthroot((i-1)*n + t, 2);  %perhaps?
+           %eta = 0.01;
             x = X(:, t);
+            %[U, ~] = qr(U,0);
             U = U + eta*x*(x'*U);
-            [U,~] = qr(U, 0);             %do more sparingly...
+            if (mod(t, 5) == 0)
+                [U,~] = qr(U, 0);             %do more sparingly...
+            end
             waitbar((n*(i-1) + t)/(iters*n),h)
         end
-        
+        [U,~] = qr(U, 0);
     end
+    close(h);
     
 
 end

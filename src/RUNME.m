@@ -31,6 +31,8 @@ testAccuracySubspaceIPCA = 0;
 bestKMSG = 0;
 bestNMSG = 0;
 testAccuracySubspaceMSG = 0;
+global maxDimension; %VERY IMPORTANT, but only for sparse PCA...
+maxDimension = 1200; %why this can't be on the above line is beyond me...
 maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
 %because some algorithms run in O(d*k^2) PER EXAMPLE
 
@@ -54,18 +56,25 @@ maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
 
 
 %% train KNN model on data projected onto learned subspace
+train = (1/255)*train;
+dev = (1/255)*dev;
+test = (1/255)*test;
 display('training KNN on subspace learned by built-in pca'); %DONE
-[U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
+% [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
 
 
 display('training KNN on subspace learned by stochastic power method'); %DONE
-% [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
+%  [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
 
 display('training KNN on subspace learned by incremental pca'); %DONE
-[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
+%[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
 
-display('Dr. Arora wants Stochastic MSG as well :(');
-% [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, @msg);
+display('training KNN on subspace learned by MSG'); %DONE
+% [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @msg);
+
+display('training KNN on a SPARSE subspace learned by SPCA - may take up to 5 mins');
+[U_k, bestKSPCA, bestNSPCA, testAccuracySubspaceSPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spca);
+
 
 %% train Tree-bagged model with subspaces learned by above algorithms
 % display('training bagged tree on subspace');
@@ -98,6 +107,7 @@ testAccuracyAll1 = sum(predictedLabelsTest1 == testlabels')/length(predictedLabe
 fprintf('accuracy of %d-dim subspace on %d-NN learned by PCA: %f\n', bestKPCA, bestNPCA, testAccuracySubspacePCA);
 fprintf('accuracy of %d-dim subspace on %d-NN learned by SPM: %f\n', bestKSPM, bestNSPM, testAccuracySubspaceSPM);
 fprintf('accuracy of %d-dim subspace on %d-NN learned by IPCA: %f\n', bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA);
+fprintf('accuracy of %d by %d-dim subspace on %d-NN learned by SPCA: %f\n', maxDimension, bestKSPCA,  bestNSPCA, testAccuracySubspaceSPCA);
 
 % fprintf('accuracy of %d-dim subspace on BaggedTree: %d\n', bestK, testAccuracySubspace2);
 fprintf('accuracy of entire data on KNN: %f\n', testAccuracyAll1);
@@ -116,9 +126,41 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, 
     maxN      = 10;
     bestN     = 3;   %actually tune this hyperparameter as well
     neighbors = 1;   %neighbors = 1:maxN:
+    d         = size(train', 2);
     
     if (isequal(fcnHandle, @pca))
        U = fcnHandle(train'); 
+    elseif (isequal(fcnHandle, @spca))
+        %ignore the following commented out region -- that was a bad
+        %implementation, it only returned one vector at a time. I tried to
+        %fix it by deflating the train matrix one dyad at a time, 
+        %but to no avail...
+        
+%         card_min = 0.001;
+%         card_max = 0.6;
+%         U = [];
+%         lastLambda = inf;
+%         trainTemp = train';
+%         %must use DEFLATION k times to find the k-dimensional maximal
+%         %variance subspace...
+%         for i = 1:maxK
+%             [~, lambda, u_k]= sparsePCA(train',1200); %round(card_min*d),round(card_max*d), 1);
+%             if (lambda > lastLambda)
+%                 lambda
+%                 lastLambda
+%                 error('variances are non-decreasing in inverse power itereration');
+%             end
+%             lastLambda = lambda;
+% 
+%             trainTemp = trainTemp - lambda*u_k*(u_k'*trainTemp');
+%             U(:, i) = u_k;
+%             fprintf('found %dth pc with lambda = %d\n', i, lambda);
+%         end
+%         size(U)
+
+        [B SV L D PATHS] = spca(train', [], maxK, inf, -1200);
+        U = B;
+        
     else
        U = fcnHandle(train', maxK); %learn the full uncorrelated subspace via algo
     end

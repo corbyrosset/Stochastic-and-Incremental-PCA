@@ -1,0 +1,28 @@
+
+loaded data of size 32256 by 1850
+1103 train, 332 dev, 415 test
+training KNN on subspace learned by built-in pca
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+training KNN on subspace learned by stochastic power method
+----iteration 1
+----iteration 2
+----iteration 3
+----iteration 4
+----iteration 5
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+training KNN on subspace learned by incremental pca
+----iteration 1
+POSSIBLE ERROR: r_mag is zero, all black column?
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+Dr. Arora wants Stochastic MSG as well :(
+training KNN with ALL dimensions
+accuracy of 80-dim subspace on 1-NN learned by PCA: 0.722892
+accuracy of 80-dim subspace on 1-NN learned by SPM: 0.380723
+accuracy of 38-dim subspace on 1-NN learned by IPCA: 0.922892
+accuracy of entire data on KNN: 0.790361

@@ -8,7 +8,7 @@
 function U = ipca(X, k)
 
     X = X';               % to make things work
-    iters = 3;            % how many times to loop over entire training set
+    iters = 1;            % how many times to loop over entire training set
     t = 0;                % iterate
     n = size(X, 2);       % number of examples
 %     k = 200;              % MUST conform to api: return a dxn matrix
@@ -37,7 +37,10 @@ function U = ipca(X, k)
            r_mag = norm(r);
            Q = [S + x_hat*x_hat', r_mag*x_hat; r_mag*x_hat', r_mag^2];
            if (r_mag == 0)
-              error('r_mag is zero, all black column?'); 
+%               r_mag = 1;  %FIX FIX FIX f
+              display('r_mag is zero, all black column?'); 
+              continue;
+
            end
            if (sum(sum(isnan(Q))))
                error('Q has NaNs in it');
@@ -62,6 +65,7 @@ function U = ipca(X, k)
         end
         
     end
+    close(h);
 
 %C_hat +xx^T = [u r/r_norm]*[S +x_hat*x_hat^t, rnorm*xhat; rnorm*xhat,
 %r_norm^2] * [U^t; r/r_nrom
