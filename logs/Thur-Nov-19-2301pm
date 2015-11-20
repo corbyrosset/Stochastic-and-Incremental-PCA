@@ -1,0 +1,23 @@
+loaded data of size 32256 by 1850
+1158 train, 337 dev, 355 test
+training KNN on subspace learned by built-in pca
+done
+training KNN on subspace learned by stochastic power method
+done
+training KNN on subspace learned by incremental pca
+done
+training KNN on subspace learned by MSG
+----iteration 1
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+done
+training KNN on a SPARSE subspace learned by SPCA - may take up to 5 mins
+done
+training KNN with ALL dimensions
+accuracy of 0-dim subspace on 0-NN learned by PCA: 0.000000
+accuracy of 0-dim subspace on 0-NN learned by SPM: 0.000000
+accuracy of 0-dim subspace on 0-NN learned by IPCA: 0.000000
+accuracy of 48-dim subspace on 1-NN learned by MSG: 0.853521
+accuracy of 1200 by 0-dim subspace on 0-NN learned by SPCA: 0.000000
+accuracy of entire data on KNN: 0.771831
