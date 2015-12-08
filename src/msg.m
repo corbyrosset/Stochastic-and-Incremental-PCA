@@ -52,6 +52,11 @@ function U = msg(X, k)
         end
         
     end
+    [U, S] = msgsample(k, U, S);
+    domain = [1:k];
+    scatter(domain, S); hold on;
+    title('eigenvalues of msg');
+    hold off;
     close(h);
     
 end

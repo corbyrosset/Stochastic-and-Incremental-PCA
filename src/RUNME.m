@@ -10,9 +10,7 @@
 %WARNING: the built-in pca() already centers and normalizes the data, doing
 %so before calling pca() would result in an empty matrix!
 %
-%WARNING: do not normalize or mean center data because data is grayscale 
-%image and it makes no sense for the mean to be 0 (meaning negative pixels
-%exist!...
+
 
 function [] = RUNME()
 %% load in raw data into 77760x164 matrix for Yale face data, 164 images
@@ -34,10 +32,20 @@ testAccuracySubspaceMSG = 0;
 bestKSPCA = 0;
 bestNSPCA = 0;
 testAccuracySubspaceSPCA = 0;
+bestKSVDPCA = 0;
+bestNSVDPCA = 0;
+testAccuracySubspaceSVDPCA = 0;
 global maxDimension; %VERY IMPORTANT, but only for sparse PCA...
 maxDimension = 1200; %why this can't be on the above line is beyond me...
 maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
 %because some algorithms run in O(d*k^2) PER EXAMPLE
+global meantrain;
+global meandev;
+global meantest;
+
+meantrain = [];
+meandev = [];
+meantest = [];
 
 
 
@@ -59,23 +67,36 @@ maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
 
 
 %% train KNN model on data projected onto learned subspace
-train = (1/255)*train;
-dev = (1/255)*dev;
-test = (1/255)*test;
+% train = (1/255)*train;
+% dev = (1/255)*dev;
+% test = (1/255)*test;
+
+[train, meantrain] = candN(train);
+[dev, meandev] = candN(dev);
+[test, meantest] = candN(test);
+
 display('training KNN on subspace learned by built-in pca'); %DONE
-% [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
+%  [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
 display('done');
 
 display('training KNN on subspace learned by stochastic power method'); %DONE
-%  [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
+% [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
 display('done');
 
-display('training KNN on subspace learned by incremental pca'); %DONE
-%[U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
+display('training KNN on subspace learned by incremental ipca'); %DONE
+% [U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
 display('done');
 
 display('training KNN on subspace learned by MSG'); %DONE
  [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @msg);
+display('done');
+
+display('training KNN on subspace learned by Online PCA'); 
+%[U_k, bestKON, bestNON, testAccuracySubspaceON] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @onpca);
+display('done');
+
+display('training KNN on subspace learned by SVD PCA'); 
+% [U_k, bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @svdpca);
 display('done');
 
 display('training KNN on a SPARSE subspace learned by SPCA - may take up to 5 mins');
@@ -115,6 +136,7 @@ fprintf('accuracy of %d-dim subspace on %d-NN learned by PCA: %f\n', bestKPCA, b
 fprintf('accuracy of %d-dim subspace on %d-NN learned by SPM: %f\n', bestKSPM, bestNSPM, testAccuracySubspaceSPM);
 fprintf('accuracy of %d-dim subspace on %d-NN learned by IPCA: %f\n', bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA);
 fprintf('accuracy of %d-dim subspace on %d-NN learned by MSG: %f\n', bestKMSG, bestNMSG, testAccuracySubspaceMSG);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by SVD PCA: %f\n', bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA);
 fprintf('accuracy of %d by %d-dim subspace on %d-NN learned by SPCA: %f\n', maxDimension, bestKSPCA,  bestNSPCA, testAccuracySubspaceSPCA);
 
 % fprintf('accuracy of %d-dim subspace on BaggedTree: %d\n', bestK, testAccuracySubspace2);
@@ -136,6 +158,7 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, 
     neighbors = 1;   %neighbors = 1:maxN:
     d         = size(train', 2);
     
+    
     %how to handle each algorithm, some require special attention...
     if (isequal(fcnHandle, @pca))
        U = fcnHandle(train'); 
@@ -147,6 +170,7 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, 
     end
     
     if (size(U, 1) ~= size(train, 1))
+        size(train)
         size(U)
         error('U not properly sized');
     end
@@ -201,7 +225,7 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, 
 end
 
 %% center and normalize
-function X = candN(X)
+function [X, mean] = candN(X)
     mean = sum(X, 2)/size(X, 2);
     stdtrain = std(X');
     Xcenter = bsxfun(@minus, X, mean);
@@ -212,6 +236,11 @@ function [U_k, bestK, bestN, testAccuracy] = ...
     trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, fcnHandle)
 
     [U_k, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, fcnHandle);
+    sample = train(: ,500);
+    reconstruct(sample, U_k);
+    
+
+    
     mdlLearned1 = fitcknn((U_k'*train)', trainlabels, 'NumNeighbors', bestN);
     [predictedLabelsTest1, ~] = predict(mdlLearned1,(U_k'*test)');
     testAccuracy = sum(predictedLabelsTest1 == testlabels')/length(predictedLabelsTest1);
@@ -219,4 +248,22 @@ function [U_k, bestK, bestN, testAccuracy] = ...
 end
 
 
+%reconstruct a face using the learned subspace
+function [reconstructed_face] = reconstruct(sample, U_k) 
 
+    
+    original = reshape(sample, 192, 168);
+    
+    %sample = times(sample,U_k(:, 1));
+    %sample = sample + .5;
+    for k = 1:6 
+        ff = figure;
+        reconstructed_face = U_k(:,1:k*5)*U_k(:,1:k*5)'*sample;
+        recon = reshape(reconstructed_face, 192, 168);
+        imshow(recon);
+    end
+    
+    fff = figure;
+    imshow(original);
+
+end

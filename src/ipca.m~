@@ -59,24 +59,31 @@ function U = ipca(X, k)
            %sort by decending eigenvalues?
            [S_blah, ind] = sort(diag(S), 'descend');
            S = diag(S_blah);
-           %fprintf('number of zero eigenvalues: %d\n', size(find(S_blah == 0)));
+           
+           fprintf('number of zero eigenvalues: %d\n', size(S_blah(S_blah == 0)
+
            U = U(:, ind);
            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
            if (size(U, 1) > k)
                %truncate
                U = U(:, 1:k);
-               %eigenvalue we throw out:
-               %fprintf('eigenvalues thrown out: %d, max is: %d', S(k+1, k+1), S(1, 1));
+               
+               size(S)
+               S(k+1, k+1)
                S = S(1:k, 1:k);
+               %eigenvalue we throw out:
                
            end
            waitbar((n*(i-1) + t)/(iters*n),h) 
         end   
     end
     maxevalue = max(diag(S));
+    norm(U)
+    U = (1/maxevalue)*U;
+    norm(U)
     
     domain = [1:k];
-    scatter(domain, diag(S)); hold on;
+    scatter(domain, (1/maxevalue)*diag(S)); hold on;
     title('eigenvalues of ipca');
     hold off;
     close(h);
