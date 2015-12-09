@@ -9,39 +9,26 @@
 \usepackage{latexsym}
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
-\title{Instructions for NAACL HLT 2010 Proceedings\Thanks{This
-    document has been adapted from the instructions for earlier ACL
-    and NAACL proceedings, including those for NAACL-HLT-09 by Joakim
-    Nivre and Noah Smith, for ACL-05 by Hwee Tou Ng and Kemal Oflazer,
-    for ACL-02 by Eugene Charniak and Dekang Lin, and earlier ACL and
-    EACL formats.  Those versions were written by several people,
-    including John Chen, Henry S. Thompson and Donald Walker.
-    Additional elements were taken from the formatting instructions of
-    the {\em International Joint Conference on Artificial
-      Intelligence}.}}
+\title{A Comparison of Stochastic Methods for PCA as Applied to Streaming Facial Recognition\Thanks{We would like to thank Dr. Raman Arora for his work on stochastic algorithms for manifold learning.}}
 
-\author{Claudia Leacock\\
-  Butler Hill Group\\
-  100 Bleecker Street, 27A\\
-  New York, NY 10012, USA\\
-  {\tt claudia.leacock@gmail.com}
+\author{Corbin Rosset\\
+  Johns Hopkins Dept. of Computer Science\\
+  3400 N. Charles St.\\
+  Baltimore, MD 21218, USA\\
+  {\tt crosset2@jhu.edu}
   \And
-  Richard Wicentowski \\
-  Swarthmore College \\
-  500 College Avenue \\
-  Swarthmore, PA 19081, USA\\
-  {\tt richardw@cs.swarthmore.edu}}
+  Edmund Duhaime \\
+  Johns Hopkins Dept. of Computer Science\\
+  3400 N. Charles St.\\
+  Baltimore, MD 21218, USA\\
+  {\tt eduhaim1@jhu.edu}}
 
 \date{}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-  This document contains the instructions for preparing a camera-ready
-  manuscript for the proceedings of NAACL HLT 2010. The document itself conforms
-  to its own specifications, and is therefore an example of what
-  your manuscript should look like.  Authors are asked to conform to
-  all the directions reported in this document.
+  This study applies a variety of stochastic and incremental techniques for principle component analysis (PCA) to quickly learn maximally informative linear subspaces on a streaming version of the Yale Face Data Set B. We compare the performance of a K-nearest neighbor classifier and a bagged tree learner on the best subspaces learned by each of: Stochastic Power Method (SPM), Incremental PCA (IPCA), Matrix Stochastic Descent (MSG), and Sparse PCA (SPCA). We compare and contrast the theoretical properties such as correctness, space, and iteration complexity. In all cases, the memory required to store a subspace capable of achieving accuracy similar to that of the baseline classifier was  2-4$\%$ of the size of the input data. These algorithms play an important role in improving the scalability of facial recognition in a streaming setting. 
 \end{abstract}
 
 \section{Introduction}
