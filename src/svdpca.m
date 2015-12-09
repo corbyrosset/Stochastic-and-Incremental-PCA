@@ -1,14 +1,9 @@
-function U = svdpca(X, k)
+function [U, S] = svdpca(X, k)
     X = X';               % to make things work
-    n = size(X, 1);       % number of examples
-    d = size(X, 2);       % dimensionality
-    %size(X)
-    %avg = (mean(X, 1))';
-    %X = X - (repmat(avg, 1, n))';
-    [U, S, V] = svd(X);
-    %size(U)
+    
+    [U, S, ~] = svd(X, 'econ');
+    %remember, X*X^t = U*S^2*U^T for X = U*S*V^T
+    
     [S, indices] = sort(diag(S), 'descend');
     U = U(:, indices);
-    
-    
 end

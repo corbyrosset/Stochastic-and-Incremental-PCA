@@ -88,7 +88,7 @@ display('training KNN on subspace learned by incremental ipca'); %DONE
 display('done');
 
 display('training KNN on subspace learned by MSG'); %DONE
-%  [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @msg);
+ [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @msg);
 display('done');
 
 display('training KNN on subspace learned by Online PCA'); 
@@ -96,7 +96,7 @@ display('training KNN on subspace learned by Online PCA');
 display('done');
 
 display('training KNN on subspace learned by SVD PCA'); 
- [U_k, bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @svdpca);
+% [U_k, bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @svdpca);
 display('done');
 
 display('training KNN on a SPARSE subspace learned by SPCA - may take up to 5 mins');
@@ -254,7 +254,9 @@ function [U_k, bestK, bestN, testAccuracy] = ...
        str = sprintf('thresholded_eigenface_number_%d', i);
        print(tt, str,'-dpng');
     end
+    
 
+    
     mdlLearned1 = fitcknn((U_k'*train)', trainlabels, 'NumNeighbors', bestN);
     [predictedLabelsTest1, ~] = predict(mdlLearned1,(U_k'*test)');
     testAccuracy = sum(predictedLabelsTest1 == testlabels')/length(predictedLabelsTest1);
@@ -283,7 +285,7 @@ function [reconstructed_face] = reconstruct(sample, U_k)
 
 end
 
-function [im, im2] = eigenface(U_k)
+function [t, tt] = eigenface(U_k)
 
     s = U_k; 
     s = (s + abs(min(s)))/(max(s)); %rescale
@@ -291,7 +293,7 @@ function [im, im2] = eigenface(U_k)
     
     
     %only keep components of the principle eigenvector with most weight
-    throwout = find(s < (mean(s) + std(s)));
+    throwout = find(s < (mean(s) + 0.85*std(s)));
     s(throwout) = 0;
     im2 = reshape(s, 192, 168); 
 end

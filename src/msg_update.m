@@ -34,16 +34,16 @@ function [U,S]=rank1update(U,S,value,eta,x,epsilon )
 xhat=U'*x;
 res=x-U*xhat;
 resnorm=norm(res);
-if ((resnorm < epsilon) || (k >= d))
-    dS=diag(S)+eta*(xhat*xhat');
-    dS=0.5*(dS+dS'); %**make sure matlab knows the matrix is real symmetric
-    
-else
+% if ((resnorm < epsilon) || (k >= d))
+%     dS=diag(S)+eta*(xhat*xhat');
+%     dS=0.5*(dS+dS'); %**make sure matlab knows the matrix is real symmetric
+%     
+% else
     U=[U,res/resnorm ];
     dS=[diag(S)+eta*(xhat*xhat'), (eta*resnorm)*xhat;...
         (eta*resnorm)*xhat', value+(eta*resnorm*resnorm)];
     dS=0.5*(dS+dS'); %**make sure matlab knows the matrix is real symmetric
-end
+% end
 [Utilde,newS]=eig(dS);
 U=U*Utilde;
 S=diag(newS)';

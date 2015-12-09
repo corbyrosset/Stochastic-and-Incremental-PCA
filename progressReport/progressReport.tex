@@ -1,0 +1,35 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{hyperref} 
+\usepackage{color}
+
+\oddsidemargin 0mm
+\evensidemargin 5mm
+\topmargin -20mm
+\textheight 240mm
+\textwidth 160mm
+
+\parskip 12pt 
+\setlength{\parindent}{0in}
+
+\pagestyle{myheadings} 
+
+\title{Comparison of Stochastic Approximation Methods for PCA applied to a KNN Classifier}
+
+\author{Corbin Rosset (crosset2, crosset2@jhu.edu), Edmund Duhaime (eduhaim1, eduhaim1@jhu.edu)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Progress Report}
+
+Overall things are going well. So far we have managed to implement and test Stochastic Power Iteration, Incremental PCA, and Capped MSG. Incremental and MSG have been performing well, while the Stochastic Power Iteration has been performing poorly. We still need to tune the hyper parameters in order to improve classification accuracy for Stochastic Power Iteration. Interestingly for MSG and Incremental PCA we are seeing a decrease in accuracy after about 35 principle components, which is what we expected since KNN should do worse after adding more dimensions. We still have Online PCA to implement. In terms of our proposal we are mostly track to complete our `must achieve' and `expected to achieve', but will likely not be able to complete any of the additional `would like to achieve'. The one thing we have to change is that we realized we cannot do Power Iteration because it requires a complete covariance matrix, so instead we will attempt to compute the PCA directly using singular value decomposition. 
+
+
+
+\end{document}
