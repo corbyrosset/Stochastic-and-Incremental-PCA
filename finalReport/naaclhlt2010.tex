@@ -10,6 +10,8 @@
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 \usepackage{times}
 \usepackage{latexsym}
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+
 
 \title{A Comparison of Stochastic Methods for PCA as Applied to Streaming Facial Recognition\Thanks{We would like to thank Dr. Raman Arora for his work on stochastic algorithms for manifold learning.}}
 
@@ -35,24 +37,55 @@
 
 \section{Introduction}
 
-The premise of subspace learning is to map a data matrix $X \in \mathcal{R}^{d \times n}$ of $n$ examples each of dimension $d$ to a $k$ dimensional subspace, $k << d$ that preserves maximal ``information''. The motivation is that most data sets capture redundant, verbose, or noisy features that dilute the true parameters behind the data.  
+The premise of subspace learning is to map a data matrix $X \in \mathbb{R}^{d \times n}$ of $n$ examples each of dimension $d$ to a $k$ dimensional subspace, $k << d$ that preserves maximal ``information''. The motivation is that most data sets capture redundant, verbose, or noisy features that mask the underlying structure of the data.  It is often the case that natural processes are largely controlled by finitely many simpler mechanisms that operate in lower dimensions. For example, latent variables captured by images such as shadows, reflections, perspective can drastically alter pixel values even though such phenomenon are easily parameterized. PCA seeks to find low dimensional linear representations of these latent variables such that, when transformed back into the original space, the loss of information is minimal. In the next section, we will pose PCA as an optimization problem with multiple equivalent interpretations, and then derive its empirical solution. We will then describe and derive solututions to the state of the art stochastic and incremental approximation algorithms to the PCA objective. We applied each of the algorithms on the Yale Face Data Set B in a streaming fashion and trained a K-NN neighbor classifier on the respective learned subspaces. 
 
 
 
 \section{PCA and its Stochastic Variants}
 
-introduce dual but equivalent concepts of reconstruction error and variance retention
+Given $n$ data points in $\mathbb{R}^d$, find an orthogonal projection matrix $U \in \mathbb{R}^{d \times k}$ such that the projection $\hat{x} \in \mathbb{R}^k$ of a data vector $x \in \mathbb{R}^{d}$ given by $\hat{x}=UU^\top x$ minimizes the empirical reconstruction error:
 
-state the empirical covariance matrix is d x d too big to be in memory
+\begin{equation}
+\begin{aligned}
+\text{Error} &= \frac{1}{n} \sum_{i=1}^n \| x_i-UU^\top x_i \|^2_2 \\
+&=\frac{1}{n}\sum_{i=1}^n \left(\|x\|_2^2- \|U^\top x_i\|_2^2 \right)
+\end{aligned}
+\end{equation}
 
-show how to solve for PCA using power method if true covariance were known
+In Equation 1, the term $\frac{1}{n} \sum_{i=1}^n \| x_i \|^2_2$ is constant given any data set $x$. So in order to minimize the reconstruction, or projection, error, we must maximize $\frac{1}{n} \sum_{i=1}^n \|U^\top x_i\|_2^2$. This is equivalent to maximizing the trace of $U^\top {\left[\displaystyle \frac{1}{n} \sum_{i=1}^n x_i x_i^\top \right]} U$ where $C_{xx} = \frac{1}{n} \sum_{i=1}^n x_i x_i^\top $ is the empirical covariance matrix.
+
+Since the $i$'th diagonal entry of $C_{xx}$ is the variance \footnote{It is assumed $X$ is centered $\mathbb{E}[x_i] = 0$, eliminating the $(\mathbb{E}[x_i])^2$ term in the variance.} of $x_i$, $var(x_i) = \mathbb{E}[x_i x_i^{\top}]$ the trace of $C_{xx}$ is the variance of the whole data matrix. Hence it is natural to interpret $ \mathbb{E}[\|U^\top x_i\|_2^2] =  \mathbb{E}[U^\top x_ix_i^{\top}U]$ as the variance of $x_i$ captured by $U$. Thus, PCA serves to minimize reconstruction error, or maximize the variance of the data captured by the subspace $U$. Derived in the appendix, it turns out that $U$ is comprised of the top-$k$ eigenvectors of $C_{xx}$ sorted in decreasing order of eigenvalue: $U = V_{:, 1:k}$ for $C_{xx} = VSV^{\top}$. 
+
+This solution holds for any distribution $\mathcal{D}$ of the data as long as each of the $n$ samples are drawn i.i.d from it. For a correct empirical covariance matrix, a simple $O(d^2mk)$ time algorithm known as the power iteration method calculates $U \in \mathbb{R}^{d \times k}$ using $O(m)$ iterations per component \footnote{the iteration complexity depends on the eigengap between consecutive components; a larger difference in eigenvalues implies faster convergence}. 
+
+The most pressing challenge is the temporal\footnote{the fastest known algorithm for brute force eigendecomposition of $C_{xx}$ is $O(d^3+d^2log^2d)$} and spatial dependence of these solutions on powers of $d$, which can easily be intractable for $d \geq10^5$, which is common for images. Secondly, a batch algorithm may not satisfy modern computational desires, for many modern applications require responses to realtime streaming data arriving at high frequency. 
+
+Subspace learning (linear or nonlinear) is ubiquitous in data-driven applications such as compression, de-noising, visualization and matrix completion. 
 
 
 
 \subsection{Stochastic Power Method}
 
-notes from class and relation to power method
+The optimization problem describing PCA,  
 
+\begin{equation}
+\begin{aligned}
+& \underset{U \in \mathbb{R}^{d \times k}}{\text{max}}
+& & \mathbb{E}_{\mathcal{D}}\left[\text{trace}\left(U^{\top}xx^{\top}U\right)\right] \\
+& \text{subject to}
+& & U^{\top}U = I
+\end{aligned}
+\end{equation}
+
+is in fact nonconvex due to the constraint and the objective function being a maximization. A convex relaxation is given by the constraint that $U^{\top}U \preceq I$ meaning all eigenvalues of $C_{xx}$ are at most one, and optimally equally to one. Assuming $\mathcal{D}$ is unknown but unchanging, the goal is to update $U$ directly as samples $x_i$ arrive sequentially and independently. Since we have access to neither $\mathcal{D}$ nor the population of samples ahead of time, neither $C_{xx}$ nor its empirical estimate can be computed. However, the i.i.d assumption admits $\mathbb{E}[ x_t x_t^{\top}] = C_{xx}$.
+
+In this setting, gradient descent is a viable algorithm, with updates of the form 
+
+\begin{equation}
+U^{(t + 1)} = \mathcal{P}_{orth} \left( U^{(t)} + \eta_t x_t x_t^{\top}U^{(t)} \right)
+\end{equation}
+
+The projection of the updated $U$ onto the set of orthonormal matrices, $\mathcal{P}_{orth}$ can be accomplished in $O(k^2d)$ time using Gram-Schmidt or QR factorization. Notice that instead of $O(d^2)$ memory, the updates require only $O(kd)$. The time complexity is $O(Tkd)$ for $T$ iterations. While this algorithm converges with probability 1, the rate of convergence is unknown. Obviously, if the true covariance $C_{xx}$ were known, then the objective function would become $\text{trace}\left(U^{\top}C_{xx}U\right)$ with derivative $2C_{xx}U$, which would replace the gradient term in the update above.  The 
 
 \subsection{Incremental PCA}
 notes from class
