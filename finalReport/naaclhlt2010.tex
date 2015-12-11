@@ -54,11 +54,11 @@ Given $n$ data points in $\mathbb{R}^d$, find an orthogonal projection matrix $U
 
 In Equation 1, the term $\frac{1}{n} \sum_{i=1}^n \| x_i \|^2_2$ is constant given any data set $x$. So in order to minimize the reconstruction, or projection, error, we must maximize $\frac{1}{n} \sum_{i=1}^n \|U^\top x_i\|_2^2$. This is equivalent to maximizing the trace of $U^\top {\left[\displaystyle \frac{1}{n} \sum_{i=1}^n x_i x_i^\top \right]} U$ where $C_{xx} = \frac{1}{n} \sum_{i=1}^n x_i x_i^\top $ is the empirical covariance matrix.
 
-Since the $i$'th diagonal entry of $C_{xx}$ is the variance \footnote{It is assumed $X$ is centered $\mathbb{E}[x_i] = 0$, eliminating the $(\mathbb{E}[x_i])^2$ term in the variance.} of $x_i$, $var(x_i) = \mathbb{E}[x_i x_i^{\top}]$ the trace of $C_{xx}$ is the variance of the whole data matrix. Hence it is natural to interpret $ \mathbb{E}[\|U^\top x_i\|_2^2] =  \mathbb{E}[U^\top x_ix_i^{\top}U]$ as the variance of $x_i$ captured by $U$. Thus, PCA serves to minimize reconstruction error, or maximize the variance of the data captured by the subspace $U$. Derived in the appendix, it turns out that $U$ is comprised of the top-$k$ eigenvectors of $C_{xx}$ sorted in decreasing order of eigenvalue: $U = V_{:, 1:k}$ for $C_{xx} = VSV^{\top}$. 
+Since the $i$'th diagonal entry of $C_{xx}$ is the variance \footnote{It is assumed $X$ is centered $\mathbb{E}[x_i] = 0$, eliminating the $(\mathbb{E}[x_i])^2$ term in the variance.} of $x_i$, $var(x_i) = \mathbb{E}[x_i^{\top} x_i]$ the trace of $C_{xx}$ is the variance of the whole data matrix. Hence it is natural to interpret $ \mathbb{E}[\|U^\top x_i\|_2^2] =  \mathbb{E}[U^\top x_ix_i^{\top}U]$ as the variance of $x_i$ captured by $U$. Thus, PCA serves to minimize reconstruction error, or maximize the variance of the data captured by the subspace $U$. Derived in the appendix, it turns out that $U$ is comprised of the top-$k$ eigenvectors of $C_{xx}$ sorted in decreasing order of eigenvalue: $U = V_{:, 1:k}$ for $C_{xx} = VSV^{\top}$. 
 
 This solution holds for any distribution $\mathcal{D}$ of the data as long as each of the $n$ samples are drawn i.i.d from it. For a correct empirical covariance matrix, a simple $O(d^2mk)$ time algorithm known as the power iteration method calculates $U \in \mathbb{R}^{d \times k}$ using $O(m)$ iterations per component \footnote{the iteration complexity depends on the eigengap between consecutive components; a larger difference in eigenvalues implies faster convergence}. 
 
-The most pressing challenge is the temporal\footnote{the fastest known algorithm for brute force eigendecomposition of $C_{xx}$ is $O(d^3+d^2log^2d)$} and spatial dependence of these solutions on powers of $d$, which can easily be intractable for $d \geq10^5$, which is common for images. Secondly, a batch algorithm may not satisfy modern computational desires, for many modern applications require responses to realtime streaming data arriving at high frequency. 
+The most pressing challenge is the temporal\footnote{the fastest known algorithm for brute force eigendecomposition of $C_{xx}$ is $O(d^3+d^2log^2d)$} and spatial dependence of these solutions on powers of $d$, which can easily be intractable for $d \geq10^5$, which is common for images. Secondly, a batch algorithm may not satisfy modern computational desires, for many modern applications require responses to realtime streaming data arriving at high frequency. In such streaming models, it is also desired that the algorithm adapt to and track the optimal subspace.
 
 Subspace learning (linear or nonlinear) is ubiquitous in data-driven applications such as compression, de-noising, visualization and matrix completion. 
 
@@ -88,12 +88,52 @@ U^{(t + 1)} = \mathcal{P}_{orth} \left( U^{(t)} + \eta_t x_t x_t^{\top}U^{(t)} \
 The projection of the updated $U$ onto the set of orthonormal matrices, $\mathcal{P}_{orth}$ can be accomplished in $O(k^2d)$ time using Gram-Schmidt or QR factorization. Notice that instead of $O(d^2)$ memory, the updates require only $O(kd)$. The time complexity is $O(Tkd)$ for $T$ iterations. While this algorithm converges with probability 1, the rate of convergence is unknown. Obviously, if the true covariance $C_{xx}$ were known, then the objective function would become $\text{trace}\left(U^{\top}C_{xx}U\right)$ with derivative $2C_{xx}U$, which would replace the gradient term in the update above.  The 
 
 \subsection{Incremental PCA}
-notes from class
+Derived from incremental singular value decomposition \cite{brand}, a rank-$k$ approximation to the empirical covariance matrix can be updated incrementally:
+
+\begin{equation}
+C_{xx}^{(t + 1)} = \Pi_k \left(C_{xx}^{(t)} + x_tx_t^{\top}\right)
+\end{equation}
+where $\Pi_k$ is the projection onto the set of rank-$k$ matrices with respect to the spectral norm. To avoid explicit computation the $d \times d$ matrix $x_tx_t^{\top}$, we assume by the inductive hypothesis\footnote{Initialize the algorithm with $U$ and $S$ equal to all zeros.} that a rank-$\ell$ approximation to $C_{xx}^{(t)} = USU^{\top}$ is given, and make rank one updates to Equation 4 of the form: 
+
+\begin{equation}
+\begin{bmatrix} U & \frac{x_{\perp}}{||x_{\perp}||} \end{bmatrix}  \begin{bmatrix} 
+S + \hat{x}\hat{x}^{\top} & ||x_{\perp}||_2 \hat{x} \\
+||x_{\perp}||_2 \hat{x}^{\top} & ||x_{\perp}||_2^2 \end{bmatrix}
+\begin{bmatrix} U \\
+ \frac{x_{\perp}}{||x_{\perp}||} \end{bmatrix}
+\end{equation}
+
+for $\hat{x} = U^{\top}x_t$ the coefficients of the projection of $x_t$ onto the column space of $U$, and $x_{\perp} = x_t - UU^{\top}x_t$ its orthogonal component. The 2nd matrix in Equation 5, denoted $Q$, is symmetric of size $\ell + 1 \times \ell +1$, and therefore $Q$ itself can be eigendecomposed $Q = U'S'U'^{\top}$ in $O(k^3)$ time\footnote{it will be enforced that $\ell = k$} with positive eigenvalues that happen to be those $S$ plus one more from the rank-one update. Finally, set $U = \begin{bmatrix} U & \frac{x_{\perp}}{||x_{\perp}||} \end{bmatrix} U'$ and $S = S'$ and truncated each to retain the top-$k$ eigenvectors and eigenvalues sorted in decreasing spectral energy. 
+
+The memory required is $O(kd)$ and runtime is $O(Tk^2d)$ dominated by the update to $U$ each of the $T$ iterations. There are also no parameters to tune here. In practice, this algorithm is most expeditious to converge, but there are data distributions that arise naturally or adversarially that cause the algorithm to converge to an incorrect subspace with high probability \cite{arora1}. Some proposed remedies have been to store rank-$k'$ matrices, $k' > k$ or use mini-batch updates to lower the probability of failure. 
 
 
 \subsection{Matrix Stochastic Gradient}
 
-notes from class
+The loss function in Equation 1 can be rewritten as follows:
+
+\begin{equation}
+\begin{aligned}
+& \underset{P \in \mathbb{R}^{d \times d}}{\text{min}}
+& & \mathbb{E}_{\mathcal{x \tilde D}}\left[ x^{\top}(I - P)x\right] \\
+& \text{subject to}
+& & \text{rank}(P)\leq k, 0 \preceq P \preceq I
+\end{aligned}
+\end{equation}
+
+for $P = UU^{\top}$ an orthogonal projection matrix. Again, a convex relaxation replaces the constraints with: trace$(P) = k$, $0 \preceq P \preceq I$. The iterate updates are:
+
+\begin{equation}
+P^{(t + 1)} = \Pi_{\text{trace}(P) = k, 0 \preceq P \preceq I} \left(P^{(t)} + \eta_tx_tx_t^{\top}\right)
+\end{equation}
+
+which again is rewritten in the form of incremental SVD to preserve only a rank-$k$ approximation of the true projection matrix, and to avoid the $d \times d$ calculation. Assume an approximation of the eigendecomposition is given as $P^{t)} = USU^{\top}$ for $P \in \mathbb{R}^{d \times k}$, then for a new example $x_t$, $P^{(t+1)} + x_tx_t^{\top}$ has the same update as Equation 5 for the same definition of $x_{\perp}$ and $\hat{x}$. 
+
+However, unlike IPCA, the projection step here $ \Pi_{\text{trace}(P) = k, 0 \preceq P \preceq I}$, is necessary; it can be computed as follows:
+
+$S_{ii} \gets max(0, min(1, S'_{ii} + \mu))$ for $\mu \in \mathbb{R}$ such that $\sum_i S_ii = k$ is a shifting of all eigenvalues by a constant so that their sum is $k$. This is merely a rescaling of the learned subspace, and as before, $U \gets \begin{bmatrix} U & \frac{x_{\perp}}{||x_{\perp}||} \end{bmatrix} U'$, but only those columns corresponding to nonzero $S_{ii}$.
+
+
 
 \subsection{Sparse PCA}
 
@@ -106,7 +146,14 @@ discuss johnson lindenstrauss lemma popularly applied to proximity problems to p
 
 \section{Experiments}
 
-{\bf NED: describe the contents of the data, how we removed bad images, just like proposal...} 
+The data used for the experiments was Extended Yale Face Dataset B (B+) \footnote{{http://vision.ucsd.edu/content/extended-yale-face-database-b-b}}. This dataset includes images of 38 people with light at various angles to their faces. Each image is of size 168x192 pixels and in grayscale. The total dataset is approximately 2400 images with 64 images for each person. 
+
+Some images were deemed to be of too poor quality to include in the data used for the experiment, as no discernible features were present and the classifier would only be guessing. All the images were manually evaluated to determine which sets to take out, and then specific types of lighting angles were removed from the dataset. This reduced the dataset to about 1850 images. 
+
+The reduced dataset was then split into 60\% train data, 20\% test data, and 20\% dev data. For each of the previously described algorithms 80 principle components were generated from the reduced dataset training data. Then a KNN classifier was trained on the principle components, starting from a single principle component and going up to 80. The built-in Matlab KNN classifier was used for this. The accuracy of the classifier was recorded and cross validation performed each time a principle component was added. The KNN classifier was also run directly on the whole dataset. 
+
+In addition to accuracy of the classifiers, images were reconstructed using the principle components to see how well they had captured the faces. ``Eigenfaces'' (the top five principle components combined and shown as images) were also calculated and stored. 
+
 
 \section{Results}
 
@@ -164,6 +211,12 @@ Do not number the acknowledgment section.
   volume = 27, 
   number = 5, 
   pages= "684-698"} }
+  
+  \bibitem{arora1} Arora, R.; Cotter, A.; Livescu, K.; Srebro, N., "Stochastic optimization for PCA and PLS," in Communication, Control, and Computing (Allerton), 2012 50th Annual Allerton Conference on , vol., no., pp.861-868, 1-5 Oct. 2012
+  
+  \bibitem{brand}  Brand, Matthew. {\em Incremental Singular Value Decomposition of Uncertain Data with Missing Values} In ECCV '02: Proceedings of the 7th European Conference on Computer Vision-Part I (2002), pp. 707-720
+  
+  
 
 the following are examples
 

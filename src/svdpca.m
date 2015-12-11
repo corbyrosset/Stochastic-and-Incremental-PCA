@@ -6,4 +6,6 @@ function [U, S] = svdpca(X, k)
     
     [S, indices] = sort(diag(S), 'descend');
     U = U(:, indices);
+    U = U(:, 1:k);
+    S = S(1:k, 1);
 end

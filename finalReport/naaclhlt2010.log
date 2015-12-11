@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  10 DEC 2015 03:43
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  10 DEC 2015 23:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -172,12 +172,17 @@ Underfull \hbox (badness 2635) in paragraph at lines 35--36
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 67.
 
-[2] [3] (./naaclhlt2010.aux) ) 
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
+[][]\OT1/ptm/m/n/9 http://vision.ucsd.edu/content/extended-yale-face-
+ []
+
+[3] [4] (./naaclhlt2010.aux) ) 
 Here is how much of TeX's memory you used:
- 1369 strings out of 493315
- 16400 string characters out of 6137904
- 73627 words of memory out of 5000000
- 4815 multiletter control sequences out of 15000+600000
+ 1371 strings out of 493315
+ 16415 string characters out of 6137904
+ 76627 words of memory out of 5000000
+ 4817 multiletter control sequences out of 15000+600000
  32670 words of font info for 90 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  27i,12n,26p,1322b,265s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -199,10 +204,10 @@ al/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr
 exlive/2013/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/201
 3/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-di
 st/fonts/type1/urw/times/utmri8a.pfb>
-Output written on naaclhlt2010.pdf (3 pages, 174033 bytes).
+Output written on naaclhlt2010.pdf (4 pages, 187765 bytes).
 PDF statistics:
- 83 PDF objects out of 1000 (max. 8388607)
- 60 compressed objects within 1 object stream
+ 86 PDF objects out of 1000 (max. 8388607)
+ 62 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

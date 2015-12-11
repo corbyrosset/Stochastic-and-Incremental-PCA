@@ -1,0 +1,77 @@
+loaded data of size 32256 by 1850
+1114 train, 348 dev, 388 test
+
+dataVariance =
+
+   3.5901e+07
+
+training KNN on subspace learned by built-in pca
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+done
+training KNN on subspace learned by stochastic power method
+----iteration 1
+----iteration 2
+----iteration 3
+----iteration 4
+----iteration 5
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+
+varspm =
+
+   3.0654e+07
+
+done
+training KNN on subspace learned by incremental ipca
+----iteration 1
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+
+varipca =
+
+   3.4441e+07
+
+done
+training KNN on subspace learned by MSG
+----iteration 1
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+
+varmsg =
+
+   3.0882e+07
+
+done
+training KNN on subspace learned by SVD PCA
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+
+varsvdpca =
+
+   3.5901e+07
+
+done
+training KNN on a SPARSE subspace learned by SPCA - may take up to 5 mins
+----training KNN with k= 25
+----training KNN with k= 50
+----training KNN with k= 75
+
+varspca =
+
+   2.5818e+07
+
+done
+training KNN with ALL dimensions
+accuracy of 79-dim subspace on 1-NN learned by PCA: 0.752577 in time 57.462464 with captured variance 3.590093e+07
+accuracy of 78-dim subspace on 1-NN learned by SPM: 0.636598 in time 322.280270 with captured variance 0
+accuracy of 76-dim subspace on 1-NN learned by IPCA: 0.752577 in time 93.472143 with captured variance 0
+accuracy of 36-dim subspace on 1-NN learned by MSG: 0.755155 in time 171.284834 with captured variance 0
+accuracy of 79-dim subspace on 1-NN learned by SVD PCA: 0.752577 in time 78.221124 with captured variance 0
+accuracy of 1200 by 61-dim subspace on 1-NN learned by SPCA: 0.729381 in time 292.768488 with captured variance 0
+accuracy of entire data on KNN: 0.806701

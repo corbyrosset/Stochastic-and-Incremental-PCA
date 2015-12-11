@@ -11,17 +11,16 @@
 function U = msg(X, k)
 
     X = X';               % to make things work. X is matrix of [0, 255]
-    X = candN(X);         % 
 %     X = normc(X); %OH GOD
-    iters = 1;            % how many times to loop over entire training set
-    t = 0;                % iterate
-    n = size(X, 2);       % number of examples
-    d = size(X, 1);       % dimensionality
-    U = zeros(d, 1);      % provably better accuracy with all zeros initial
-    S = zeros(1, 1);      % both U and S will grow larger...
-    eta = 1/sqrt(n*iters);% seems to be good enough eta
-    epsilon = 0.01;       % don't know what the significance of this is...
-    warning('off','all'); %because it clutters screen as matrix initializes
+    iters = 7;              % how many times to loop over entire training set
+    t = 0;                  % iterate
+    n = size(X, 2);         % number of examples
+    d = size(X, 1);         % dimensionality
+    U = zeros(d, 1);        % provably better accuracy with all zeros initial
+    S = zeros(1, 1);        % both U and S will grow larger...
+    eta = sqrt(k/(n*iters));% seems to be good enough eta
+    epsilon = 0.000001;         % don't know what the significance of this is...
+    warning('off','all');   %because it clutters screen as matrix initializes
    
     if(size(X, 1) ~= 32256)           %obviously change
        size(X)
@@ -35,19 +34,15 @@ function U = msg(X, k)
            x = X(:, t);
            
            [U,S] = msg_update(k,U,S,eta,x,epsilon);
-           if (sum(S) > k)
-               display('----------------');
-               sum(sigma)
-               sigma
-               error('sum of sigmas not less than k, projection failed')
+           if (sum(S) > 1)
+%                display('----------------');
+%                warning('sum of sigmas %f not less than k, projection failed', sum(S));
+               [U, S] = msgsample(k, U, S);   
            end
-           if (rank(U) > k + 20) %why +20? idk...magic number
-               %this happens quite often
-%                fprintf('sampling %d from rank-%d U matrix\n', k, rank(U));
+%            fprintf('sum sigma %d, rank(U) %d\n', sum(S), rank(U));
+           if (rank(U) > k + 20) %why +20?, bc this happens quite often
                [U, S] = msgsample(k, U, S);
            end
-           indices = find(S == 0);
-           U(:, indices) = [];
            waitbar((n*(i-1) + t)/(iters*n),h);
         end
         

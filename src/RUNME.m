@@ -35,6 +35,16 @@ testAccuracySubspaceSPCA = 0;
 bestKSVDPCA = 0;
 bestNSVDPCA = 0;
 testAccuracySubspaceSVDPCA = 0;
+global varspm;
+varspm = 0;
+global varipca;
+varipca = 0;
+global varmsg;
+varmsg = 0;
+global varsvdpca;
+varsvdpca = 0;
+global varspca;
+varspca = 0;
 global maxDimension; %VERY IMPORTANT, but only for sparse PCA...
 maxDimension = 1200; %why this can't be on the above line is beyond me...
 maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
@@ -42,6 +52,8 @@ maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
 global meantrain;
 global meandev;
 global meantest;
+global dataVariance;
+
 
 meantrain = [];
 meandev = [];
@@ -75,32 +87,43 @@ meantest = [];
 [dev, meandev] = candN(dev);
 [test, meantest] = candN(test);
 
+dataVariance = calcVariance([], train)
+setGlobalx(floor(rand(1) *size(train,2))+1);
+
 display('training KNN on subspace learned by built-in pca'); %DONE
-%  [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
+tic;
+  [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA, ~] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
+timepca = toc;
 display('done');
 
 display('training KNN on subspace learned by stochastic power method'); %DONE
-% [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
+tic;
+ [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM, varspm] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
+timespm = toc;
 display('done');
 
 display('training KNN on subspace learned by incremental ipca'); %DONE
-% [U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
+tic;
+ [U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA, varipca] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
+timeipca = toc;
 display('done');
 
-display('training KNN on subspace learned by MSG'); %DONE
-%  [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @msg);
-display('done');
-
-display('training KNN on subspace learned by Online PCA'); 
-%[U_k, bestKON, bestNON, testAccuracySubspaceON] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @onpca);
+display('training KNN on subspace learned by MSG - may take up to 10 mins'); %DONE
+tic;
+ [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG, varmsg] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @msg);
+timemsg = toc;
 display('done');
 
 display('training KNN on subspace learned by SVD PCA'); 
- [U_k, bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @svdpca);
-display('done');
+tic;
+ [U_k, bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA, varsvdpca] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @svdpca);
+timesvdpca = toc;
+ display('done');
 
 display('training KNN on a SPARSE subspace learned by SPCA - may take up to 5 mins');
-% [U_k, bestKSPCA, bestNSPCA, testAccuracySubspaceSPCA] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spca);
+tic; 
+[U_k, bestKSPCA, bestNSPCA, testAccuracySubspaceSPCA, varspca] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spca);
+timespca = toc;
 display('done');
 
 
@@ -132,12 +155,18 @@ testAccuracyAll1 = sum(predictedLabelsTest1 == testlabels')/length(predictedLabe
 
 %% output results
 
-fprintf('accuracy of %d-dim subspace on %d-NN learned by PCA: %f\n', bestKPCA, bestNPCA, testAccuracySubspacePCA);
-fprintf('accuracy of %d-dim subspace on %d-NN learned by SPM: %f\n', bestKSPM, bestNSPM, testAccuracySubspaceSPM);
-fprintf('accuracy of %d-dim subspace on %d-NN learned by IPCA: %f\n', bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA);
-fprintf('accuracy of %d-dim subspace on %d-NN learned by MSG: %f\n', bestKMSG, bestNMSG, testAccuracySubspaceMSG);
-fprintf('accuracy of %d-dim subspace on %d-NN learned by SVD PCA: %f\n', bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA);
-fprintf('accuracy of %d by %d-dim subspace on %d-NN learned by SPCA: %f\n', maxDimension, bestKSPCA,  bestNSPCA, testAccuracySubspaceSPCA);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by PCA: %f in time %f with captured variance %d\n',...
+    bestKPCA, bestNPCA, testAccuracySubspacePCA, timepca, dataVariance);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by SPM: %f in time %f with captured variance %d\n',...
+    bestKSPM, bestNSPM, testAccuracySubspaceSPM, timespm, varspm);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by IPCA: %f in time %f with captured variance %d\n',...
+    bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA, timeipca, varipca);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by MSG: %f in time %f with captured variance %d\n',...
+    bestKMSG, bestNMSG, testAccuracySubspaceMSG, timemsg, varmsg);
+fprintf('accuracy of %d-dim subspace on %d-NN learned by SVD PCA: %f in time %f with captured variance %d\n',...
+    bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA, timesvdpca, varsvdpca );
+fprintf('accuracy of %d by %d-dim subspace on %d-NN learned by SPCA: %f in time %f with captured variance %d\n',...
+    maxDimension, bestKSPCA,  bestNSPCA, testAccuracySubspaceSPCA, timespca, varspca);
 
 % fprintf('accuracy of %d-dim subspace on BaggedTree: %d\n', bestK, testAccuracySubspace2);
 fprintf('accuracy of entire data on KNN: %f\n', testAccuracyAll1);
@@ -148,7 +177,7 @@ end
 
 
 %% train model on learned k-dimensional subspace, determine k via cross-val
-function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, fcnHandle)
+function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels, dev, devlabels, maxK, fcnHandle)
     devAc     = [];
     bestK     = 0;
     bestAcc   = 0;
@@ -157,8 +186,10 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, 
     bestN     = 3;   %actually tune this hyperparameter as well
     neighbors = 1;   %neighbors = 1:maxN:
     d         = size(train', 2);
+    var       = 0;
+    vararray  = [];
     
-    
+    chngdir = 0;
     %how to handle each algorithm, some require special attention...
     if (isequal(fcnHandle, @pca))
        U = fcnHandle(train'); 
@@ -206,19 +237,92 @@ function [U, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, 
        title('Accuracy of KNN trained on subspace learned by PCA'); 
        hold off;
        print(fig,'cross-val-PCA','-dpng');
+       
+       mkdir('PCA-Faces');
+       cd('PCA-Faces');
+       chngdir = 1;
     elseif (isequal(fcnHandle, @spm))
         title('Accuracy of KNN trained on subspace learned by SPM');
         hold off;
         print(fig,'cross-val-SPM','-dpng');
-
+        
+        %plot variance captured by each principle component
+        [var, vararray] = calcVariance(U, train);
+        f = figure;
+        plot(vararray); hold on;
+        title('Variance Captured by First X Principle Components, SPM');
+        hold off;
+        print(f, 'Var SPM', '-dpng');
+   
+        mkdir('SPM-Faces');
+        cd('SPM-Faces');
+        chngdir = 1;
     elseif (isequal(fcnHandle, @ipca))
         title('Accuracy of KNN trained on subspace learned by IPCA'); 
         hold off;
         print(fig,'cross-val-IPCA','-dpng');
+        
+        %plot variance captured by each principle component
+        [var, vararray] = calcVariance(U, train);
+        f = figure;
+        plot(vararray); hold on;
+        title('Variance Captured by First X Principle Components, IPCA');
+        hold off;
+        print(f, 'Var IPCA', '-dpng');
+           
+        mkdir('IPCA-Faces');
+        cd('IPCA-Faces');
+        chngdir = 1;
     elseif (isequal(fcnHandle, @msg))
         title('Accuracy of KNN trained on subspace learned by MSG');
         hold off;
         print(fig,'cross-val-MSG','-dpng');
+        
+        %plot variance captured by each principle component
+        [var, vararray] = calcVariance(U, train);
+        f = figure;
+        plot(vararray); hold on;
+        title('Variance Captured by Each Principle Component, MSG');
+        hold off;
+        print(f, 'Var MSG', '-dpng');
+        
+        mkdir('MSG-Faces');
+        cd('MSG-Faces');
+        chngdir = 1;
+    elseif (isequal(fcnHandle, @spca))
+        title('Accuracy of KNN trained on subspace learned by SPCA');
+        hold off;
+        print(fig,'cross-val-SPCA','-dpng');
+        
+        %plot variance captured by each principle component
+        [var, vararray] = calcVariance(U, train);      
+        f = figure;
+        plot(vararray); hold on;
+        title('Variance Captured by First X Principle Components, SPCA');
+        hold off;
+        print(f, 'Var SPCA', '-dpng');
+        
+        mkdir('SPCA-Faces');
+        cd('SPCA-Faces');
+        chngdir = 1;
+        
+    elseif (isequal(fcnHandle, @svdpca))
+        title('Accuracy of KNN trained on subspace learned by SVDPCA');
+        hold off;
+        print(fig,'cross-val-SVDPCA','-dpng'); 
+        
+        %plot variance captured by each principle component
+        [var, vararray] = calcVariance(U, train);
+        f = figure;
+        plot(vararray); hold on;
+        title('Variance Captured by First X Principle Components, SVDPCA');
+        hold off;
+        print(f, 'Var SVDPCA', '-dpng');
+        
+        mkdir('SVDPCA-Faces');
+        cd('SVDPCA-Faces');
+        chngdir = 1;
+        
     end        
     U = U(:, 1:bestK);
     
@@ -232,35 +336,55 @@ function [X, mean] = candN(X)
     X = bsxfun(@rdivide, Xcenter, stdtrain');
 end
 
-function [U_k, bestK, bestN, testAccuracy] = ...
-    trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, fcnHandle)
-
-    [U_k, bestK, bestN] = crossVal(train, trainlabels, dev, devlabels, maxK, fcnHandle);
-    sample = train(: ,500);
-%     reconstruct(sample, U_k);
+function [U_k, bestK, bestN, testAccuracy, var, vararray] = ...
+trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, fcnHandle)
+    var = 0;
+    vararray = [];
+    [U_k, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels, dev, devlabels, maxK, fcnHandle);
+    
+    randface = getGlobalx();
+    sample = train(: ,randface);
+    reconstruct(sample, U_k);
+    
     t = figure;
     tt = figure;
     for i = 1:5
        [im, im2] = eigenface(U_k(:, i)); 
        figure(t);
        imshow(im);
-       title('first principle eigenface');
+       str = sprintf(' %d th principle eigenface', i);
+       title(str);
        str = sprintf('eigenface_number_%d', i);
        print(t, str,'-dpng');
        
        figure(tt);
        imshow(im2);
-       title('thresholded eigenface');
+       str = sprintf(' %d th thresholded eigenface', i);
+       title(str);
        str = sprintf('thresholded_eigenface_number_%d', i);
        print(tt, str,'-dpng');
     end
 
+    if chngdir 
+        cd('../');
+    end
+    
     mdlLearned1 = fitcknn((U_k'*train)', trainlabels, 'NumNeighbors', bestN);
     [predictedLabelsTest1, ~] = predict(mdlLearned1,(U_k'*test)');
     testAccuracy = sum(predictedLabelsTest1 == testlabels')/length(predictedLabelsTest1);
 
 end
 
+function setGlobalx(val)
+    global x
+    x = val;
+end
+
+
+function r = getGlobalx
+    global x
+    r = x;
+end
 
 %reconstruct a face using different numbers of the principle 
 %components from the learned subspace
@@ -275,11 +399,12 @@ function [reconstructed_face] = reconstruct(sample, U_k)
         imshow(recon);
         str = sprintf('face sample reconstructed with %d PCs', k*5); 
         title(str);
+        print(ff, str, '-dpng');
     end
     
     fff = figure;
     imshow(original);
-    error('blah')
+    str = sprintf('original face');
 
 end
 
@@ -294,4 +419,18 @@ function [im, im2] = eigenface(U_k)
     throwout = find(s < (mean(s) + std(s)));
     s(throwout) = 0;
     im2 = reshape(s, 192, 168); 
+end
+
+function [v, array] = calcVariance(U, X)
+    v = 0;
+    array = [];
+    if (isempty(U))
+        v = trace(X'*X);
+        array = zeros(size(X, 2), 1);
+    else
+        v = trace(U'*X*X'*U);
+        for j = 1:size(U, 2) %for each principles component
+           array = [array trace((U(:, 1:j)'*X)*(X'*U(:, 1:j)))]; 
+        end
+    end
 end
