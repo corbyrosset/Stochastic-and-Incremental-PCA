@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  10 DEC 2015 23:36
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  13 DEC 2015 00:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -34,6 +34,11 @@ Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
 \symlasy=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
 (Font)                  U/lasy/m/n --> U/lasy/b/n on input line 47.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/cite/cite.sty
+LaTeX Info: Redefining \cite on input line 302.
+LaTeX Info: Redefining \nocite on input line 373.
+Package: cite 2010/09/10  v 5.3
 )
 (/usr/local/texlive/2013/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2013/01/14 v2.14 AMS math features
@@ -115,52 +120,218 @@ Package: amsthm 2004/08/06 v2.20
 \thm@headsep=\skip49
 \dth@everypar=\toks24
 )
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks25
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count99
+))
+\Gin@req@height=\dimen112
+\Gin@req@width=\dimen113
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+\captionmargin=\dimen114
+\captionmargin@=\dimen115
+\captionwidth=\dimen116
+\caption@tempdima=\dimen117
+\caption@indent=\dimen118
+\caption@parindent=\dimen119
+\caption@hangindent=\dimen120
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
+)
+
+Package caption Warning: Unsupported document class (or package) detected,
+(caption)                usage of the caption package is not recommended.
+See the caption package documentation for explanation.
+
+Package caption Info: \@makecaption = \long macro:#1->\@@makecaption {\small #1
+}.
+\c@ContinuedFloat=\count100
+)
+\c@KVtest=\count101
+\sf@farskip=\skip50
+\sf@captopadj=\dimen121
+\sf@capskip=\skip51
+\sf@nearskip=\skip52
+\c@subfigure=\count102
+\c@subfigure@save=\count103
+\c@lofdepth=\count104
+\c@subtable=\count105
+\c@subtable@save=\count106
+\c@lotdepth=\count107
+\sf@top=\skip53
+\sf@bottom=\skip54
+) (/usr/local/texlive/2013/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count108
+\float@exts=\toks26
+\float@box=\box28
+\@float@everytoks=\toks27
+\@floatcapt=\box29
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/lipsum/lipsum.sty
+Package: lipsum 2011/04/14 v1.2 150 paragraphs of Lorem Ipsum dummy text
+\c@lips@count=\count109
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/oberdiek/grffile.sty
+Package: grffile 2012/04/05 v1.16 Extended file name support for graphics (HO)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+Package grffile Info: Option `multidot' is set to `true'.
+Package grffile Info: Option `extendedchars' is set to `false'.
+Package grffile Info: Option `space' is set to `true'.
+Package grffile Info: \Gin@ii of package `graphicx' fixed on input line 486.
+)
 (./naaclhlt2010.aux)
 \openout1 = `naaclhlt2010.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 32.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 39.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
+(/usr/local/texlive/2013/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count110
+\scratchdimen=\dimen122
+\scratchbox=\box30
+\nofMPsegments=\count111
+\nofMParguments=\count112
+\everyMPshowfont=\toks28
+\MPscratchCnt=\count113
+\MPscratchDim=\dimen123
+\MPnumerator=\count114
+\makeMPintoPDFobject=\count115
+\everyMPtoPDFconversion=\toks29
+) (/usr/local/texlive/2013/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: subfig package v1.3 is loaded.
+Package caption Info: float package is loaded.
+Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
-LaTeX Font Info:    Try loading font information for U+lasy on input line 33.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 40.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 40.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 33.
+LaTeX Font Info:    Try loading font information for U+msa on input line 40.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 33.
+LaTeX Font Info:    Try loading font information for U+msb on input line 40.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 33.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 40.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 40.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Underfull \hbox (badness 2635) in paragraph at lines 35--36
-\OT1/ptm/m/n/10 i-mally in-for-ma-tive lin-ear sub-spaces on a
+Underfull \hbox (badness 3009) in paragraph at lines 42--43
+[]\OT1/ptm/m/n/10 This study ap-plies a va-ri-ety of stochas-
+ []
+
+
+Underfull \hbox (badness 1867) in paragraph at lines 42--43
+\OT1/ptm/m/n/10 of a K-nearest neigh-bor clas-si-fier on the
  []
 
 [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
@@ -170,44 +341,391 @@ Underfull \hbox (badness 2635) in paragraph at lines 35--36
 
 ]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 67.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 73.
 
-[2]
-Underfull \hbox (badness 10000) in paragraph at lines 149--149
+[2] [3]
+
+LaTeX Warning: Citation `JL1' on page 4 undefined on input line 182.
+
+
+LaTeX Warning: Citation `Achlioptas' on page 4 undefined on input line 184.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 188--188
 [][]\OT1/ptm/m/n/9 http://vision.ucsd.edu/content/extended-yale-face-
  []
 
-[3] [4] (./naaclhlt2010.aux) ) 
+[4] <figures/cross-val-PCA.png, id=32, 578.16pt x 433.62pt>
+File: figures/cross-val-PCA.png Graphic file (type png)
+
+<use figures/cross-val-PCA.png>
+Package pdftex.def Info: figures/cross-val-PCA.png used on input line 204.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/cross-val-SVDPCA.png, id=33, 578.16pt x 433.62pt>
+File: figures/cross-val-SVDPCA.png Graphic file (type png)
+
+<use figures/cross-val-SVDPCA.png>
+Package pdftex.def Info: figures/cross-val-SVDPCA.png used on input line 205.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/cross-val-SPM.png, id=34, 578.16pt x 433.62pt>
+File: figures/cross-val-SPM.png Graphic file (type png)
+
+<use figures/cross-val-SPM.png>
+Package pdftex.def Info: figures/cross-val-SPM.png used on input line 206.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/cross-val-IPCA.png, id=35, 578.16pt x 433.62pt>
+File: figures/cross-val-IPCA.png Graphic file (type png)
+
+<use figures/cross-val-IPCA.png>
+Package pdftex.def Info: figures/cross-val-IPCA.png used on input line 207.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/cross-val-MSG.png, id=36, 578.16pt x 433.62pt>
+File: figures/cross-val-MSG.png Graphic file (type png)
+
+<use figures/cross-val-MSG.png>
+Package pdftex.def Info: figures/cross-val-MSG.png used on input line 208.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/cross-val-SPCA.png, id=37, 578.16pt x 433.62pt>
+File: figures/cross-val-SPCA.png Graphic file (type png)
+
+<use figures/cross-val-SPCA.png>
+Package pdftex.def Info: figures/cross-val-SPCA.png used on input line 209.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+Underfull \hbox (badness 1418) in paragraph at lines 246--247
+[]\OT1/ptm/m/n/10.95 From look-ing at both the re-con-struc-tion and
+ []
+
+[5] <figures/PCA-Faces/original face.png, id=41, 578.16pt x 433.62pt>
+File: figures/PCA-Faces/original face.png Graphic file (type png)
+
+<use figures/PCA-Faces/original face.png>
+Package pdftex.def Info: figures/PCA-Faces/original face.png used on input line
+ 252.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/PCA-Faces/eigenface_number_1.png, id=42, 578.16pt x 433.62pt>
+File: figures/PCA-Faces/eigenface_number_1.png Graphic file (type png)
+
+<use figures/PCA-Faces/eigenface_number_1.png>
+Package pdftex.def Info: figures/PCA-Faces/eigenface_number_1.png used on input
+ line 258.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SPM-Faces/eigenface_number_1.png, id=43, 578.16pt x 433.62pt>
+File: figures/SPM-Faces/eigenface_number_1.png Graphic file (type png)
+
+<use figures/SPM-Faces/eigenface_number_1.png>
+Package pdftex.def Info: figures/SPM-Faces/eigenface_number_1.png used on input
+ line 259.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/IPCA-Faces/eigenface_number_1.png, id=44, 578.16pt x 433.62pt>
+File: figures/IPCA-Faces/eigenface_number_1.png Graphic file (type png)
+
+<use figures/IPCA-Faces/eigenface_number_1.png>
+Package pdftex.def Info: figures/IPCA-Faces/eigenface_number_1.png used on inpu
+t line 260.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/MSG-Faces/eigenface_number_1.png, id=45, 578.16pt x 433.62pt>
+File: figures/MSG-Faces/eigenface_number_1.png Graphic file (type png)
+
+<use figures/MSG-Faces/eigenface_number_1.png>
+Package pdftex.def Info: figures/MSG-Faces/eigenface_number_1.png used on input
+ line 261.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SVDPCA-Faces/eigenface_number_1.png, id=46, 578.16pt x 433.62pt>
+File: figures/SVDPCA-Faces/eigenface_number_1.png Graphic file (type png)
+
+<use figures/SVDPCA-Faces/eigenface_number_1.png>
+Package pdftex.def Info: figures/SVDPCA-Faces/eigenface_number_1.png used on in
+put line 262.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SPCA-Faces/eigenface_number_1.png, id=47, 578.16pt x 433.62pt>
+File: figures/SPCA-Faces/eigenface_number_1.png Graphic file (type png)
+
+<use figures/SPCA-Faces/eigenface_number_1.png>
+Package pdftex.def Info: figures/SPCA-Faces/eigenface_number_1.png used on inpu
+t line 263.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/PCA-Faces/thresholded_eigenface_number_1.png, id=48, 578.16pt x 433.62
+pt>
+File: figures/PCA-Faces/thresholded_eigenface_number_1.png Graphic file (type p
+ng)
+ <use figures/PCA-Faces/thresholded_eigenface_number_1.png>
+Package pdftex.def Info: figures/PCA-Faces/thresholded_eigenface_number_1.png u
+sed on input line 272.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SPM-Faces/thresholded_eigenface_number_1.png, id=49, 578.16pt x 433.62
+pt>
+File: figures/SPM-Faces/thresholded_eigenface_number_1.png Graphic file (type p
+ng)
+ <use figures/SPM-Faces/thresholded_eigenface_number_1.png>
+Package pdftex.def Info: figures/SPM-Faces/thresholded_eigenface_number_1.png u
+sed on input line 273.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/IPCA-Faces/thresholded_eigenface_number_1.png, id=50, 578.16pt x 433.6
+2pt>
+File: figures/IPCA-Faces/thresholded_eigenface_number_1.png Graphic file (type 
+png)
+ <use figures/IPCA-Faces/thresholded_eigenface_number_1.png>
+Package pdftex.def Info: figures/IPCA-Faces/thresholded_eigenface_number_1.png 
+used on input line 274.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/MSG-Faces/thresholded_eigenface_number_1.png, id=51, 578.16pt x 433.62
+pt>
+File: figures/MSG-Faces/thresholded_eigenface_number_1.png Graphic file (type p
+ng)
+ <use figures/MSG-Faces/thresholded_eigenface_number_1.png>
+Package pdftex.def Info: figures/MSG-Faces/thresholded_eigenface_number_1.png u
+sed on input line 275.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SVDPCA-Faces/thresholded_eigenface_number_1.png, id=52, 578.16pt x 433
+.62pt>
+File: figures/SVDPCA-Faces/thresholded_eigenface_number_1.png Graphic file (typ
+e png)
+ <use figures/SVDPCA-Faces/thresholded_eigenface_number_1.png>
+Package pdftex.def Info: figures/SVDPCA-Faces/thresholded_eigenface_number_1.pn
+g used on input line 276.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SPCA-Faces/thresholded_eigenface_number_1.png, id=53, 578.16pt x 433.6
+2pt>
+File: figures/SPCA-Faces/thresholded_eigenface_number_1.png Graphic file (type 
+png)
+ <use figures/SPCA-Faces/thresholded_eigenface_number_1.png>
+Package pdftex.def Info: figures/SPCA-Faces/thresholded_eigenface_number_1.png 
+used on input line 277.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/PCA-Faces/face sample reconstructed with 5 PCs.png, id=54, 578.16pt x 
+433.62pt>
+File: figures/PCA-Faces/face sample reconstructed with 5 PCs.png Graphic file (
+type png)
+ <use figures/PCA-Faces/face sample reconstructed with 5 PCs.png>
+Package pdftex.def Info: figures/PCA-Faces/face sample reconstructed with 5 PCs
+.png used on input line 286.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SPM-Faces/face sample reconstructed with 5 PCs.png, id=55, 578.16pt x 
+433.62pt>
+File: figures/SPM-Faces/face sample reconstructed with 5 PCs.png Graphic file (
+type png)
+ <use figures/SPM-Faces/face sample reconstructed with 5 PCs.png>
+Package pdftex.def Info: figures/SPM-Faces/face sample reconstructed with 5 PCs
+.png used on input line 287.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/IPCA-Faces/face sample reconstructed with 5 PCs.png, id=56, 578.16pt x
+ 433.62pt>
+File: figures/IPCA-Faces/face sample reconstructed with 5 PCs.png Graphic file 
+(type png)
+ <use figures/IPCA-Faces/face sample reconstructed with 5 PCs.png>
+Package pdftex.def Info: figures/IPCA-Faces/face sample reconstructed with 5 PC
+s.png used on input line 288.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/MSG-Faces/face sample reconstructed with 5 PCs.png, id=57, 578.16pt x 
+433.62pt>
+File: figures/MSG-Faces/face sample reconstructed with 5 PCs.png Graphic file (
+type png)
+ <use figures/MSG-Faces/face sample reconstructed with 5 PCs.png>
+Package pdftex.def Info: figures/MSG-Faces/face sample reconstructed with 5 PCs
+.png used on input line 289.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SVDPCA-Faces/face sample reconstructed with 5 PCs.png, id=58, 578.16pt
+ x 433.62pt>
+File: figures/SVDPCA-Faces/face sample reconstructed with 5 PCs.png Graphic fil
+e (type png)
+
+<use figures/SVDPCA-Faces/face sample reconstructed with 5 PCs.png>
+Package pdftex.def Info: figures/SVDPCA-Faces/face sample reconstructed with 5 
+PCs.png used on input line 290.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SPCA-Faces/face sample reconstructed with 5 PCs.png, id=59, 578.16pt x
+ 433.62pt>
+File: figures/SPCA-Faces/face sample reconstructed with 5 PCs.png Graphic file 
+(type png)
+ <use figures/SPCA-Faces/face sample reconstructed with 5 PCs.png>
+Package pdftex.def Info: figures/SPCA-Faces/face sample reconstructed with 5 PC
+s.png used on input line 291.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/PCA-Faces/face sample reconstructed with 30 PCs.png, id=60, 578.16pt x
+ 433.62pt>
+File: figures/PCA-Faces/face sample reconstructed with 30 PCs.png Graphic file 
+(type png)
+ <use figures/PCA-Faces/face sample reconstructed with 30 PCs.png>
+Package pdftex.def Info: figures/PCA-Faces/face sample reconstructed with 30 PC
+s.png used on input line 299.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SPM-Faces/face sample reconstructed with 30 PCs.png, id=61, 578.16pt x
+ 433.62pt>
+File: figures/SPM-Faces/face sample reconstructed with 30 PCs.png Graphic file 
+(type png)
+ <use figures/SPM-Faces/face sample reconstructed with 30 PCs.png>
+Package pdftex.def Info: figures/SPM-Faces/face sample reconstructed with 30 PC
+s.png used on input line 300.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/IPCA-Faces/face sample reconstructed with 30 PCs.png, id=62, 578.16pt 
+x 433.62pt>
+File: figures/IPCA-Faces/face sample reconstructed with 30 PCs.png Graphic file
+ (type png)
+ <use figures/IPCA-Faces/face sample reconstructed with 30 PCs.png>
+Package pdftex.def Info: figures/IPCA-Faces/face sample reconstructed with 30 P
+Cs.png used on input line 301.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/MSG-Faces/face sample reconstructed with 30 PCs.png, id=63, 578.16pt x
+ 433.62pt>
+File: figures/MSG-Faces/face sample reconstructed with 30 PCs.png Graphic file 
+(type png)
+ <use figures/MSG-Faces/face sample reconstructed with 30 PCs.png>
+Package pdftex.def Info: figures/MSG-Faces/face sample reconstructed with 30 PC
+s.png used on input line 302.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SVDPCA-Faces/face sample reconstructed with 30 PCs.png, id=64, 578.16p
+t x 433.62pt>
+File: figures/SVDPCA-Faces/face sample reconstructed with 30 PCs.png Graphic fi
+le (type png)
+
+<use figures/SVDPCA-Faces/face sample reconstructed with 30 PCs.png>
+Package pdftex.def Info: figures/SVDPCA-Faces/face sample reconstructed with 30
+ PCs.png used on input line 303.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/SPCA-Faces/face sample reconstructed with 30 PCs.png, id=65, 578.16pt 
+x 433.62pt>
+File: figures/SPCA-Faces/face sample reconstructed with 30 PCs.png Graphic file
+ (type png)
+ <use figures/SPCA-Faces/face sample reconstructed with 30 PCs.png>
+Package pdftex.def Info: figures/SPCA-Faces/face sample reconstructed with 30 P
+Cs.png used on input line 304.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+<figures/Var SVDPCA.png, id=66, 578.16pt x 433.62pt>
+File: figures/Var SVDPCA.png Graphic file (type png)
+
+<use figures/Var SVDPCA.png>
+Package pdftex.def Info: figures/Var SVDPCA.png used on input line 313.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+ <figures/Var SPM.png, id=67, 578.16pt x 433.62pt>
+File: figures/Var SPM.png Graphic file (type png)
+
+<use figures/Var SPM.png>
+Package pdftex.def Info: figures/Var SPM.png used on input line 314.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+ <figures/Var IPCA.png, id=68, 578.16pt x 433.62pt>
+File: figures/Var IPCA.png Graphic file (type png)
+
+<use figures/Var IPCA.png>
+Package pdftex.def Info: figures/Var IPCA.png used on input line 315.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+ <figures/Var MSG.png, id=69, 578.16pt x 433.62pt>
+File: figures/Var MSG.png Graphic file (type png)
+
+<use figures/Var MSG.png>
+Package pdftex.def Info: figures/Var MSG.png used on input line 316.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+ <figures/Var SPCA.png, id=70, 578.16pt x 433.62pt>
+File: figures/Var SPCA.png Graphic file (type png)
+
+<use figures/Var SPCA.png>
+Package pdftex.def Info: figures/Var SPCA.png used on input line 317.
+(pdftex.def)             Requested size: 144.54pt x 108.40472pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 345--346
+[]\OT1/ptm/m/n/10 Arora, R., Cot-ter, A., and Sre-bro, N. 2013,
+ []
+
+
+Underfull \hbox (badness 1360) in paragraph at lines 351--352
+[]\OT1/ptm/m/n/10 Clarkson, Ken-neth L. "A ran-dom-ized al-go-rithm for
+ []
+
+[6 <./figures/cross-val-PCA.png (PNG copy)> <./figures/cross-val-SVDPCA.png (PN
+G copy)> <./figures/cross-val-SPM.png (PNG copy)> <./figures/cross-val-IPCA.png
+ (PNG copy)> <./figures/cross-val-MSG.png (PNG copy)> <./figures/cross-val-SPCA
+.png (PNG copy)> <./figures/PCA-Faces/original face.png (PNG copy)>]
+Underfull \hbox (badness 1292) in paragraph at lines 369--370
+[]\OT1/ptm/m/n/10 Turk, Matthew, and Alex Pent-land. "Eigen-faces for
+ []
+
+[7
+
+ <./figures/PCA-Faces/thresholded_eigenface_number_1.png (PNG copy)> <./figures
+/SPM-Faces/thresholded_eigenface_number_1.png (PNG copy)> <./figures/IPCA-Faces
+/thresholded_eigenface_number_1.png (PNG copy)> <./figures/MSG-Faces/thresholde
+d_eigenface_number_1.png (PNG copy)> <./figures/SVDPCA-Faces/thresholded_eigenf
+ace_number_1.png (PNG copy)> <./figures/SPCA-Faces/thresholded_eigenface_number
+_1.png (PNG copy)>] [8 <./figures/PCA-Faces/face sample reconstructed with 5 PC
+s.png (PNG copy)> <./figures/SPM-Faces/face sample reconstructed with 5 PCs.png
+ (PNG copy)> <./figures/IPCA-Faces/face sample reconstructed with 5 PCs.png (PN
+G copy)> <./figures/MSG-Faces/face sample reconstructed with 5 PCs.png (PNG cop
+y)> <./figures/SVDPCA-Faces/face sample reconstructed with 5 PCs.png (PNG copy)
+> <./figures/SPCA-Faces/face sample reconstructed with 5 PCs.png (PNG copy)> <.
+/figures/PCA-Faces/face sample reconstructed with 30 PCs.png (PNG copy)> <./fig
+ures/SPM-Faces/face sample reconstructed with 30 PCs.png (PNG copy)> <./figures
+/IPCA-Faces/face sample reconstructed with 30 PCs.png (PNG copy)> <./figures/MS
+G-Faces/face sample reconstructed with 30 PCs.png (PNG copy)> <./figures/SVDPCA
+-Faces/face sample reconstructed with 30 PCs.png (PNG copy)> <./figures/SPCA-Fa
+ces/face sample reconstructed with 30 PCs.png (PNG copy)>] [9 <./figures/Var SV
+DPCA.png (PNG copy)> <./figures/Var SPM.png (PNG copy)> <./figures/Var IPCA.png
+ (PNG copy)> <./figures/Var MSG.png (PNG copy)> <./figures/Var SPCA.png (PNG co
+py)>] (./naaclhlt2010.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 1371 strings out of 493315
- 16415 string characters out of 6137904
- 76627 words of memory out of 5000000
- 4817 multiletter control sequences out of 15000+600000
+ 4359 strings out of 493315
+ 69159 string characters out of 6137904
+ 224627 words of memory out of 5000000
+ 7715 multiletter control sequences out of 15000+600000
  32670 words of font info for 90 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 27i,12n,26p,1322b,265s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2013/texmf-dist/fonts/enc/dvi
-ps/base/8r.enc}</usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmex10.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmmi10.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmmi6.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mmi8.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
-i9.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10
-.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pf
-b></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><
-/usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></us
-r/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr
-/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/l
-ocal/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/loc
-al/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr
-/local/texlive/2013/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/t
-exlive/2013/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/201
-3/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-di
-st/fonts/type1/urw/times/utmri8a.pfb>
-Output written on naaclhlt2010.pdf (4 pages, 187765 bytes).
+ 44i,15n,47p,1322b,442s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
+exlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
+xlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
+live/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texli
+ve/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive
+/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2
+013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/201
+3/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2013/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2013/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2013/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2013/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2013/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2013/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2013/texmf-dist/fon
+ts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2013/texmf-dist
+/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/t
+ype1/urw/times/utmb8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/t
+imes/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmri
+8a.pfb>
+Output written on naaclhlt2010.pdf (9 pages, 1310605 bytes).
 PDF statistics:
- 86 PDF objects out of 1000 (max. 8388607)
- 62 compressed objects within 1 object stream
+ 143 PDF objects out of 1000 (max. 8388607)
+ 77 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 181 words of extra memory for PDF output out of 10000 (max. 10000000)
 

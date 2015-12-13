@@ -405,6 +405,8 @@ function [reconstructed_face] = reconstruct(sample, U_k)
     fff = figure;
     imshow(original);
     str = sprintf('original face');
+    title(str);
+    print(fff, str, '-dpng');
 
 end
 

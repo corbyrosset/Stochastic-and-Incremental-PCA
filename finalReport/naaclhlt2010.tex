@@ -7,11 +7,18 @@
 \usepackage{naaclhlt2010}
 \usepackage{times}
 \usepackage{latexsym}
+\usepackage{cite}
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 \usepackage{times}
 \usepackage{latexsym}
 \usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{lipsum}
+\usepackage[space]{grffile}
 
+\graphicspath{ {figures/ }}
 
 \title{A Comparison of Stochastic Methods for PCA as Applied to Streaming Facial Recognition\Thanks{We would like to thank Dr. Raman Arora for his work on stochastic algorithms for manifold learning.}}
 
@@ -32,13 +39,12 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  This study applies a variety of stochastic and incremental techniques for principle component analysis (PCA) to quickly learn maximally informative linear subspaces on a streaming version of the Yale Face Data Set B. We compare the performance of a K-nearest neighbor classifier and a bagged tree learner on the best subspaces learned by each of: Stochastic Power Method (SPM), Incremental PCA (IPCA), Matrix Stochastic Descent (MSG), and Sparse PCA (SPCA). We compare and contrast the theoretical properties such as correctness, space, and iteration complexity. In all cases, the memory required to store a subspace capable of achieving accuracy similar to that of the baseline classifier was  2-4$\%$ of the size of the input data. These algorithms play an important role in improving the scalability of facial recognition in a streaming setting. 
+  This study applies a variety of stochastic and incremental techniques for principle component analysis (PCA) to quickly learn maximally informative linear subspaces on a streaming version of the Yale Face Data Set B\cite{yale}. We compare the performance of a K-nearest neighbor classifier on the best subspaces learned by each of: Stochastic Power Method (SPM), Incremental PCA (IPCA), Matrix Stochastic Descent (MSG), and Sparse PCA (SPCA). We compare and contrast the theoretical properties such as correctness, space, and iteration complexity. In all cases, the memory required to store a subspace capable of achieving accuracy similar to that of the baseline classifier was  2-4$\%$ of the size of the input data. These algorithms play an important role in improving the scalability of facial recognition in a streaming setting. Our results match those of Turk and Pentland \cite{turk}. 
 \end{abstract}
 
 \section{Introduction}
 
 The premise of subspace learning is to map a data matrix $X \in \mathbb{R}^{d \times n}$ of $n$ examples each of dimension $d$ to a $k$ dimensional subspace, $k << d$ that preserves maximal ``information''. The motivation is that most data sets capture redundant, verbose, or noisy features that mask the underlying structure of the data.  It is often the case that natural processes are largely controlled by finitely many simpler mechanisms that operate in lower dimensions. For example, latent variables captured by images such as shadows, reflections, perspective can drastically alter pixel values even though such phenomenon are easily parameterized. PCA seeks to find low dimensional linear representations of these latent variables such that, when transformed back into the original space, the loss of information is minimal. In the next section, we will pose PCA as an optimization problem with multiple equivalent interpretations, and then derive its empirical solution. We will then describe and derive solututions to the state of the art stochastic and incremental approximation algorithms to the PCA objective. We applied each of the algorithms on the Yale Face Data Set B in a streaming fashion and trained a K-NN neighbor classifier on the respective learned subspaces. 
-
 
 
 \section{PCA and its Stochastic Variants}
@@ -133,59 +139,189 @@ However, unlike IPCA, the projection step here $ \Pi_{\text{trace}(P) = k, 0 \pr
 
 $S_{ii} \gets max(0, min(1, S'_{ii} + \mu))$ for $\mu \in \mathbb{R}$ such that $\sum_i S_ii = k$ is a shifting of all eigenvalues by a constant so that their sum is $k$. This is merely a rescaling of the learned subspace, and as before, $U \gets \begin{bmatrix} U & \frac{x_{\perp}}{||x_{\perp}||} \end{bmatrix} U'$, but only those columns corresponding to nonzero $S_{ii}$.
 
+The following theorem due to \cite{Arora2} bounds the error: After $T$ observations of i.i.d samples, the variance captured by the approximate $P$ is within $\epsilon = 2\sqrt{\frac{k}{T}}$ of the true variance for $\eta = \sqrt{\frac{k}{T}}$. That is, 
+
+\begin{equation}
+\mathbb{E}[x^{\top}Px - x^{\top}P^*x] \leq \sqrt{\frac{k}{T}}
+\end{equation}
+for $P^*$ the optimal solution to Equation 6 and assuming that initially $P^{(0)} = 0$. 
 
 
 \subsection{Sparse PCA}
 
-notes from class
+Although not the focus of this study, sparsity in principle components is highly desirable to improve interpretibility of the learned subspace and statistical consistency in high dimensions. We felt the application of facial recognition merited a comparison of sparse PCA to the other algorithms addressed here. Even though each column of $U$ is unit norm, there is often a large fraction of the input variables very near to zero. In the following experiments, we make this phenomenon explicit by comparing some of the top principle components, $u_i$ to a thresholded version, $\hat{u_i}$ in which approximately 2/3 of the components closest to zero were set to zero.
 
+Concretely, one goal would be to
+
+\begin{equation}
+\begin{aligned}
+& \underset{U \in \mathbb{R}^{d \times k}}{\text{max}}
+& & \mathbb{E}_{\mathcal{D}}\left[\text{trace}\left(U^{\top}xx^{\top}U\right)\right] \\
+& \text{subject to}
+& & ||u_i||_0 \leq t, ||u_i||_2 \leq 1
+\end{aligned}
+\end{equation}
+
+Since the $\ell_0$ ``norm'' in fact violates homogeneity of normed vector spaces, the closest convex relaxation of this constraint is $||u_i||_1 \leq c$ for all columns $u_i$ in $U$, which turns out to be good enough in practical situations. An equivalent formulation adds a regularization term, $P_{\lambda}(\tilde{u})$ to the reconstruction objective itself:
+
+\begin{equation}
+\begin{aligned}
+\{u^*, v^*\} = & \underset{\tilde{u} \in \mathbb{R}^d, \tilde{v} \in \mathbb{R}^{n}}{\text{argmin}}
+& & ||x - \tilde{u}\tilde{v}^{\top}||_F^2 + P_{\lambda}(\tilde{u})\\
+& \text{subject to}
+& & ||\tilde{v}|| = 1
+\end{aligned}
+\end{equation}
+
+where one definition of $P_{\lambda}(\tilde{u}) = \sum_{i = 1}^d p_{\lambda}(|\tilde{u_i}|)$ for $p_{\lambda}(x) = \lambda(x)$ yields an $\ell_1$ regularization term with coefficient $\lambda$. In Equation 10 above, for $X = USV^{\top} = \sum_{i = 1}^r \sigma_iu_iv_i^{\top}$ define $\tilde{u} = \sigma_1u_1$ and $\tilde{v} = v$, so that $x - \tilde{u}\tilde{v}^{\top}$ is the best rank-1 approximation to $x$ with respect to the frobenius norm\footnote{As usual, the next $k-1$ best rank-1 approximations to $x$ are found via deflation, e.g. $\tilde{u_2}, \tilde{v_2}$ is the best rank-1 approximation to $x - \tilde{u_1}\tilde{v_1}^{\top}$}. 
+
+A simple iterative algorithm by Zou and Hastie\cite{zou} exists for solving Equation 10 which alternates holding one variable constant and solving for the other until convergence. 
 
 \section{K-NN for High-Dimensional Data}
 
-discuss johnson lindenstrauss lemma popularly applied to proximity problems to preserve pairwise distances in a lower dimensional space
+Although we used K-NN as a black box algorithm, it is a fascinating discussion as to why it was able to achieve such good performance on data with very high dimensionality.\footnote{the baseline classifier achieved the best accuracy on the raw images, each with $d = 32,000$ pixels}. There are obvious two problems K-NN faces: computing distances, and quering nearest neighbors (used for kd-tree implementation of K-NN). It is well known that preserving distances exactly in high dimensional proximity problems necessitates exponential time or space complexity, and that randomized approximations are needed to reduce complexity to polynomial \cite{JL1}. Worse, while the exact nearest neighbor query time would is $O(d^{O(1)}logn)$, it requires $O(n^d)$ space \cite{clarkson} to the K-NN algorithm; a relaxation is required here as well. 
+
+Fascinating progress against these bounds has been achieved by relaxing exactness constraints to approximations - instead of returning exact distances or exact neighbors, return distances with distortion at most $1 + \epsilon$ and any neighbor within $1 + \epsilon$ the distance to the true nearest neighbor. Results by Indyk et al show that the lower bound on the embedding dimension for an $n$ point $\ell_2$ metric with a $1 + \epsilon$ distortion is $\frac{logn}{\epsilon^2log1/\epsilon}$. Surprisingly, all of these embeddings involve random matrices, even with independent uniform random entries from $\{+1, -1\}$ \cite{Achlioptas}. Such embeddings can be computed deterministically in time $O(n^2d(logn + 1/\epsilon)^{O(1)})$ \cite{engebretsen}. The $(c, r)$ approximate nearest neighbor problem is stated: given a set $S$ of $n$ points in a metric space $\mathcal{X}$ with distance metric $D$, design a data structure that supports a query operation for $q \in \mathcal{X}$ which returns $p' \in S$, $D(q, p') \leq cr$, iff  $\exists p \in S$ such that $D(q, p) \leq r$. There are many rich solutions to this problem that give query time of $O(dlogn/{\epsilon^2})$ with linear space $O(dn)$ \cite{kushilevitz}
 
 \section{Experiments}
 
-The data used for the experiments was Extended Yale Face Dataset B (B+) \footnote{{http://vision.ucsd.edu/content/extended-yale-face-database-b-b}}. This dataset includes images of 38 people with light at various angles to their faces. Each image is of size 168x192 pixels and in grayscale. The total dataset is approximately 2400 images with 64 images for each person. 
+The data used for the experiments was the Extended Yale Face Dataset B (B+) \footnote{{http://vision.ucsd.edu/content/extended-yale-face-database-b-b}}. This dataset includes images of 38 people whose faces were illuminated by a light source at various angles. Each image is of size 168x192 pixels and in grayscaled. The total dataset is approximately 2400 images with 64 images for each person. 
 
-Some images were deemed to be of too poor quality to include in the data used for the experiment, as no discernible features were present and the classifier would only be guessing. All the images were manually evaluated to determine which sets to take out, and then specific types of lighting angles were removed from the dataset. This reduced the dataset to about 1850 images. 
+Some images were deemed to be of too poor quality to include in the data used for the experiment, as no discernible features were present and the classifier would only be guessing. The images removed were labelled  ***E, and the first parameter was greater than 90. This reduced the dataset to about 1850 images. 
 
-The reduced dataset was then split into 60\% train data, 20\% test data, and 20\% dev data. For each of the previously described algorithms 80 principle components were generated from the reduced dataset training data. Then a KNN classifier was trained on the principle components, starting from a single principle component and going up to 80. The built-in Matlab KNN classifier was used for this. The accuracy of the classifier was recorded and cross validation performed each time a principle component was added. The KNN classifier was also run directly on the whole dataset. 
+The reduced dataset was then approximately split into 60\% train data, 20\% test data, and 20\% dev data at random. The data was then centered and normalized (zero mean and unit variance). For each of the previously described algorithms a hand-chosen upper bound of 80 principle components were learned from the training data using the algorithms above. Then a K-NN classifier was trained on the first $k$ principle components, for $k = 1 ... 80$. The built-in Matlab K-NN classifier was used for this\footnote{As the software is proprietary, we are not aware exactly how it is implemented, but it must employ some of the techniques discussed above for handling large dimensional data}. The accuracy of the classifier was recorded as a grid search for parameter tuning was performed. The classifier was then fed the data projected onto the top $k$ components of the subspace corresponding to the best choice of parameters. As a baseline, the classifier was also run directly on the raw dataset. 
 
-In addition to accuracy of the classifiers, images were reconstructed using the principle components to see how well they had captured the faces. ``Eigenfaces'' (the top five principle components combined and shown as images) were also calculated and stored. 
+In addition to accuracy of the classifiers, a sample of images were reconstructed using the principle components to visualize the fidelity of the subspace. Furthermore, the top ``Eigenfaces'' (a few of the top principle components shown as images) are also shown. Note that the eigenfaces do not correspond to any one person, but are learned from the data set in its entirety. We were also interested in what facial features (e.g. eyes, nose, chin) were emphasized in the top eigenfaces. To facilitate this, in a given eigenface, we threshold those pixels below the top standard deviation of intensity to zero. We also compare these thresholded eigenfaces to those eigenfaces learned by sparse PCA. 
+
+We also plot the variance captured by each algorithm as a function of the top-$k$ principle components. 
 
 
 \section{Results}
 
-{\bf NED: pictures of 1) reconstructed faces with 5, 10, 15... principle components 
-2) table of the best dimension and associated accuracy achieved by each algorithm 
-3) some examples of ``eigenfaces'' (the top five principle components shown as images) as well as their thresholded versions. You'll find these in the figures directory. 
-4) graphs of accuracy versus number of principle components for some of the algorithms (choose the better looking ones)}
+
+\begin{figure*}
+\begin{tabular}{cccc}
+\subfloat[\fontsize{10}{11} Matlab Built-in PCA]{\includegraphics[width = 2in]{figures/cross-val-PCA.png}} &
+\subfloat[\fontsize{10}{11}SVD PCA]{\includegraphics[width = 2in]{figures/cross-val-SVDPCA.png}} &
+\subfloat[\fontsize{10}{11}Stochastic Power Method]{\includegraphics[width = 2in]{figures/cross-val-SPM.png}} \\
+\subfloat[\fontsize{10}{11}Incremental PCA]{\includegraphics[width = 2in]{figures/cross-val-IPCA.png}} &
+\subfloat[\fontsize{10}{11}Matrix Stochastic Gradient]{\includegraphics[width = 2in]{figures/cross-val-MSG.png}} &
+\subfloat[\fontsize{10}{11}Sparse PCA]{\includegraphics[width = 2in]{figures/cross-val-SPCA.png}} 
+
+\end{tabular}
+\caption{\fontsize{10}{11}Percent Accuracy vs Number of Principle Components for each PCA method}
+\end{figure*}
+
 
 \begin{table}
 \begin{center}
 \begin{tabular}{|l|rl|}
-\hline \bf Type of Text & \bf Font Size & \bf Style \\ \hline
-paper title & 15 pt & bold \\
-author names & 12 pt & bold \\
-author affiliation & 12 pt & \\
-the word ``Abstract'' & 12 pt & bold \\
-section titles & 12 pt & bold \\
-document text & 11 pt  &\\
-abstract text & 10 pt & \\
-captions & 10 pt & \\
-bibliography & 10 pt & \\
-footnotes & 9 pt & \\
+\hline \bf \fontsize{10}{11}Algorithm & \bf Accuracy & \bf Time\\ \hline
+\fontsize{10}{11}Matlab PCA & 75\% & 1:00 \\
+\fontsize{10}{11}SPM & 63\% & 4:30 \\
+\fontsize{10}{11}IPCA & 75\%  &  2:00 \\
+\fontsize{10}{11}MSG & 71\%  &   17:20 \\
+\fontsize{10}{11}SVD PCA & 75\% & 1:25 \\
+\fontsize{10}{11}SPCA & 72\% & 6:51  \\
+\fontsize{10}{11}Direct KNN & 83\%  &   - \\
+
 \hline
 \end{tabular}
 \end{center}
-\caption{\label{font-table} Font guide. }
+\caption{\label{font-table} Average accuracy achieved by each algorithm and time to convergence (min:sec)}
 \end{table}
+Figure 1 shows the classification accuracy of each method implemented against the number of principle components used. Table 1 shows the best classification accuracy of each method as well as the overall time it took to train and test K-NN. As expected, the accuracy increases monotonically with the number of principle components, but diminishingly so. 
 
-{\bf Captions}: Provide a caption for every illustration; number each one
-sequentially in the form:  ``Figure 1. Caption of the Figure.'' ``Table 1.
-Caption of the Table.''  Type the captions of the figures and 
-tables below the body, using 10 point text.  
+ We confirm the result of the landmark paper by Turk and Pentland that 40 principle components is sufficient to learn a high fidelity subspace \cite{turk}. However, we did not extend these algorithms to the pattern recognition task of identifying faces in more complex image, nor did we weight the eigenfaces such that each real face could be constructed from a linear combination thereof. We theorize that realtime recognition and detection systems could benefit from the methods discussed in this study because globalization has made international travel more accessible, making the streaming model of computation more relevant. 
+
+The Matlab built-in PCA, SVD PCA\footnote{This is simply direct computation of the subspace by observing that the covariance matrix $XX^{\top} = US^2U^\top$ for $X = USV^\top$}, and Incremental PCA achieved the best accuracy overall with 75\% accuracy with the fastest convergence. Sparse PCA does reasonable well with 72\% accuracy, compared to the other methods. Interestingly, sparse PCA immediately finds a few very expressive principle componts. Matrix stochastic gradient is by far the slowest to converge, but again enjoys better theoretical guarantees. Stochastic power method is much more sensitive to its learning rate, and performing a more fine tuned grid search over $\eta$ was outside our time constraints. However, all of these algorithms should learn the same subspace to within small rotations and scalings. 
+
+One limitation to this dataset is its small sample size (only $\approx$ 2000 images in total) and even smaller label set (only 38 individuals). These algorithms are intended to be applied to orders of magnitude larger datasets. 
+
+Figure 2 shows the original face used in reconstruction. Figure 5 shows the examples of that face reconstructed using only the top five principle components for the corresponding algorithm. Figure 6 shows the original face reconstructed faces with 30 principle components.
+
+Figure 3 shows an example of the ``eigenfaces'' of the first principle components for each algorithm, Figure 4 shows the thresholded ``eigenfaces'' of the same principle components.   To our surprise, the top eigenfaces captured the effects of the lighting conditions (rather than eyes, nose, or chin, it learned the right or left half of faces). Eyebrows, pupils, lips, and cheekbones were also points of focus. 
+
+
+From looking at both the reconstruction and ``eigenfaces'' we see some explanation for the data. Incremental PCA, SVD PCA, and the Matlab PCA all learn similar ``eigenfaces'' and focus on similar anatomical details. Sparse PCA, paradoxically, is more difficult to interpret. 
+
+Figure 7 shows the variance captured by the corresponding number of principle components. For the overall data, after centering and normalization, the variance was approximately $3.55 e^7$. These match the accuracy result earlier, with SVD PCA and incremental PCA capturing the most variance. Interestingly though, sparse PCA captures less variance than the stochastic power method, but still manages to outperform in terms of accuracy. Most users select $k$ such that some threshold of the data variance is captured by the subspace.
+
+\begin{figure}
+\center
+\subfloat{\includegraphics[width = 2in]{figures/PCA-Faces/original face}}
+\caption{\fontsize{10}{11} Original Face used for Reconstruction}
+\end{figure}
+
+\begin{figure*}[H]
+\begin{tabular}{ccc}
+\subfloat[\fontsize{10}{11} Matlab ]{\includegraphics[width = 2in]{figures/PCA-Faces/eigenface_number_1.png}} &
+\subfloat[\fontsize{10}{11} SPM]{\includegraphics[width = 2in]{figures/SPM-Faces/eigenface_number_1.png}} &
+\subfloat[\fontsize{10}{11} IPCA ]{\includegraphics[width = 2in]{figures/IPCA-Faces/eigenface_number_1.png}} \\
+\subfloat[\fontsize{10}{11} MSG ]{\includegraphics[width = 2in]{figures/MSG-Faces/eigenface_number_1.png}} &
+\subfloat[\fontsize{10}{11} SVD PCA ]{\includegraphics[width = 2in]{figures/SVDPCA-Faces/eigenface_number_1.png}} &
+\subfloat[\fontsize{10}{11} SPCA ]{\includegraphics[width = 2in]{figures/SPCA-Faces/eigenface_number_1.png}}  
+
+\end{tabular}
+\caption{\fontsize{10}{11} Examples of ``Eigenfaces''}
+\end{figure*}
+
+
+\begin{figure*}[ht]
+\begin{tabular}{ccc}
+\subfloat[\fontsize{10}{11} Matlab ]{\includegraphics[width = 2in]{figures/PCA-Faces/thresholded_eigenface_number_1.png}} &
+\subfloat[\fontsize{10}{11} SPM]{\includegraphics[width = 2in]{figures/SPM-Faces/thresholded_eigenface_number_1.png}} &
+\subfloat[\fontsize{10}{11} IPCA ]{\includegraphics[width = 2in]{figures/IPCA-Faces/thresholded_eigenface_number_1.png}} \\
+\subfloat[\fontsize{10}{11} MSG ]{\includegraphics[width = 2in]{figures/MSG-Faces/thresholded_eigenface_number_1.png}} &
+\subfloat[\fontsize{10}{11} SVD PCA ]{\includegraphics[width =2in]{figures/SVDPCA-Faces/thresholded_eigenface_number_1.png}} &
+\subfloat[\fontsize{10}{11} SPCA ]{\includegraphics[width = 2in]{figures/SPCA-Faces/thresholded_eigenface_number_1.png}}  
+
+\end{tabular}
+\caption{\fontsize{10}{11} Examples of Thresholded ``Eigenfaces''}
+\end{figure*}
+
+
+\begin{figure*}[ht]
+\begin{tabular}{ccc}
+\subfloat[\fontsize{10}{11} Matlab ]{\includegraphics[width = 2in]{figures/PCA-Faces/face sample reconstructed with 5 PCs.png}} &
+\subfloat[\fontsize{10}{11} SPM]{\includegraphics[width = 2in]{figures/SPM-Faces/face sample reconstructed with 5 PCs.png}} &
+\subfloat[\fontsize{10}{11} IPCA ]{\includegraphics[width = 2in]{figures/IPCA-Faces/face sample reconstructed with 5 PCs.png}} \\
+\subfloat[\fontsize{10}{11} MSG ]{\includegraphics[width = 2in]{figures/MSG-Faces/face sample reconstructed with 5 PCs.png}} &
+\subfloat[\fontsize{10}{11} SVD PCA ]{\includegraphics[width =2in]{figures/SVDPCA-Faces/face sample reconstructed with 5 PCs.png}} &
+\subfloat[\fontsize{10}{11} SPCA ]{\includegraphics[width = 2in]{figures/SPCA-Faces/face sample reconstructed with 5 PCs.png}}  \\
+
+\end{tabular}
+\caption{\fontsize{10}{11} Reconstructed face with 5 Principle Components}
+\end{figure*}
+
+\begin{figure*}[ht]
+\begin{tabular}{ccc}
+\subfloat[\fontsize{10}{11} Matlab ]{\includegraphics[width = 2in]{figures/PCA-Faces/face sample reconstructed with 30 PCs.png}} &
+\subfloat[\fontsize{10}{11} SPM]{\includegraphics[width = 2in]{figures/SPM-Faces/face sample reconstructed with 30 PCs.png}} &
+\subfloat[\fontsize{10}{11} IPCA ]{\includegraphics[width = 2in]{figures/IPCA-Faces/face sample reconstructed with 30 PCs.png}} \\
+\subfloat[\fontsize{10}{11} MSG ]{\includegraphics[width = 2in]{figures/MSG-Faces/face sample reconstructed with 30 PCs.png}} &
+\subfloat[\fontsize{10}{11} SVD PCA ]{\includegraphics[width =2in]{figures/SVDPCA-Faces/face sample reconstructed with 30 PCs.png}} &
+\subfloat[\fontsize{10}{11} SPCA ]{\includegraphics[width = 2in]{figures/SPCA-Faces/face sample reconstructed with 30 PCs.png}}  \\
+
+\end{tabular}
+\caption{\fontsize{10}{11} Reconstructed face with 30 Principle Components}
+\end{figure*}
+
+
+\begin{figure*}
+\begin{tabular}{ccc}
+\subfloat[\fontsize{10}{11}SVD PCA]{\includegraphics[width = 2in]{figures/Var SVDPCA.png}} &
+\subfloat[\fontsize{10}{11}Stochastic Power Method]{\includegraphics[width = 2in]{figures/Var SPM.png}} &
+\subfloat[\fontsize{10}{11}Incremental PCA]{\includegraphics[width = 2in]{figures/Var IPCA.png}} \\
+\subfloat[\fontsize{10}{11}Matrix Stochastic Gradient]{\includegraphics[width = 2in]{figures/Var MSG.png}} &
+\subfloat[\fontsize{10}{11}Sparse PCA]{\includegraphics[width = 2in]{figures/Var SPCA.png}} 
+
+\end{tabular}
+\caption{\fontsize{10}{11} Variance Captured by Principle Components}
+\end{figure*}
+
+
+
 
 \section{Conclusion}
 
@@ -195,61 +331,49 @@ discuss applications of streaming subspace learning
 
 there are extensions for incremental kernal pca and dealing with the case of missing data...
 
-\section*{Acknowledgments}
-
-Do not number the acknowledgment section.
-
-\begin{thebibliography}{}
+\begin{thebibliography}{20}
 
 %%cite these:
 
- \bibitem{@Article{KCLee05, 
-  author =  "K.C. Lee and J. Ho and D. Kriegman", 
-  title =   "Acquiring Linear Subspaces for Face Recognition under Variable Lighting ", 
-  journal = "IEEE Trans. Pattern Anal. Mach. Intelligence", 
-  year =  2005, 
-  volume = 27, 
-  number = 5, 
-  pages= "684-698"} }
+  \bibitem{achlioptas} 
+  D. Achlioptas. Database-friendly random projections. In Proc. 20th Annu ACM SIGACT-SIGMOD-SIGART Symps. pages 274-281, 2001. 
   
-  \bibitem{arora1} Arora, R.; Cotter, A.; Livescu, K.; Srebro, N., "Stochastic optimization for PCA and PLS," in Communication, Control, and Computing (Allerton), 2012 50th Annual Allerton Conference on , vol., no., pp.861-868, 1-5 Oct. 2012
+  \bibitem{arora1} 
+  Arora, R.; Cotter, A.; Livescu, K.; Srebro, N., "Stochastic optimization for PCA and PLS," in Communication, Control, and Computing (Allerton), 2012 50th Annual Allerton Conference on , vol., no., pp.861-868, 1-5 Oct. 2012
   
-  \bibitem{brand}  Brand, Matthew. {\em Incremental Singular Value Decomposition of Uncertain Data with Missing Values} In ECCV '02: Proceedings of the 7th European Conference on Computer Vision-Part I (2002), pp. 707-720
+  \bibitem{Arora2}
+   Arora, R., Cotter, A., and Srebro, N. 2013, arXiv:1307.1674 
   
+  \bibitem{brand}  
+  Brand, Matthew. {\em Incremental Singular Value Decomposition of Uncertain Data with Missing Values} In ECCV '02: Proceedings of the 7th European Conference on Computer Vision-Part I (2002), pp. 707-720
   
+  \bibitem{clarkson}
+  Clarkson, Kenneth L. "A randomized algorithm for closest-point queries." SIAM Journal on Computing 17.4 (1988): 830-847.
+  
+  \bibitem{engebretsen} 
+  Engebretsen, L.; Indyk, P.; and O'Donnell, R. Derandomized dimensionality reductions with applications. In Proc. 13th Annu ACM-SIAM Sympos. Discrete Algor, 2002. 
+  
+    \bibitem{indyk} 
+    P. Indyk. and R. Motwani. Approximate nearest neigbors: Towards removing the curse of dimsionality. In proc. 30th Annu. ACM Sympos. 2000.
+  
+  \bibitem{JL}  
+  Johnson, W. B. and Lindenstrauss, J. Extensions of Lipschitz mappingsinto a Hilbert Space. Contemp. Math., 26:189-206, 1984.
+  
+  \bibitem{kushilevitz}
+  Kushilevitz, Eyal, Rafail Ostrovsky, and Yuval Rabani. "Efficient search for approximate nearest neighbor in high dimensional spaces." SIAM Journal on Computing 30.2 (2000): 457-474.
+ 
+  \bibitem{yale}  
+ Lee, K. C; Ho, J. and Kriegman, D. "Acquiring Linear Subspaces for Face Recognition under Variable Lighting ", IEEE Trans. Pattern Anal. Mach. Intelligence 2005, volume 27 pgs 684-698.  
+ 
+ \bibitem{turk}
+ Turk, Matthew, and Alex Pentland. "Eigenfaces for recognition." Journal of cognitive neuroscience 3.1 (1991): 71-86.
+  
+  \bibitem{zou} 
+  Zou, Hui, Trevor Hastie, and Robert Tibshirani. "Sparse principal component analysis." Journal of computational and graphical statistics 15.2 (2006): 265-286.
+  
+  \end{thebibliography}
 
-the following are examples
 
-\bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
-Alfred~V. Aho and Jeffrey~D. Ullman.
-\newblock 1972.
-\newblock {\em The Theory of Parsing, Translation and Compiling}, volume~1.
-\newblock Prentice-{Hall}, Englewood Cliffs, NJ.
 
-\bibitem[\protect\citename{{American Psychological Association}}1983]{APA:83}
-{American Psychological Association}.
-\newblock 1983.
-\newblock {\em Publications Manual}.
-\newblock American Psychological Association, Washington, DC.
-
-\bibitem[\protect\citename{{Association for Computing Machinery}}1983]{ACM:83}
-{Association for Computing Machinery}.
-\newblock 1983.
-\newblock {\em Computing Reviews}, 24(11):503--512.
-
-\bibitem[\protect\citename{Chandra \bgroup et al.\egroup }1981]{Chandra:81}
-Ashok~K. Chandra, Dexter~C. Kozen, and Larry~J. Stockmeyer.
-\newblock 1981.
-\newblock Alternation.
-\newblock {\em Journal of the Association for Computing Machinery},
-  28(1):114--133.
-
-\bibitem[\protect\citename{Gusfield}1997]{Gusfield:97}
-Dan Gusfield.
-\newblock 1997.
-\newblock {\em Algorithms on Strings, Trees and Sequences}.
-\newblock Cambridge University Press, Cambridge, UK.
-
-\end{thebibliography}
 
 \end{document}

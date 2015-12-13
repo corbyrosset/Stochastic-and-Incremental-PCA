@@ -35,11 +35,8 @@ function U = msg(X, k)
            
            [U,S] = msg_update(k,U,S,eta,x,epsilon);
            if (sum(S) > 1)
-%                display('----------------');
-%                warning('sum of sigmas %f not less than k, projection failed', sum(S));
                [U, S] = msgsample(k, U, S);   
            end
-%            fprintf('sum sigma %d, rank(U) %d\n', sum(S), rank(U));
            if (rank(U) > k + 20) %why +20?, bc this happens quite often
                [U, S] = msgsample(k, U, S);
            end
