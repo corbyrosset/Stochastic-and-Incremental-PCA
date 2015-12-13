@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  13 DEC 2015 00:31
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  13 DEC 2015 02:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -457,48 +457,48 @@ Package pdftex.def Info: figures/SPCA-Faces/eigenface_number_1.png used on inpu
 t line 263.
 (pdftex.def)             Requested size: 144.54pt x 108.40472pt.
 
-<figures/PCA-Faces/thresholded_eigenface_number_1.png, id=48, 578.16pt x 433.62
+<figures/PCA-Faces/thresholded_eigenface_number_3.png, id=48, 578.16pt x 433.62
 pt>
-File: figures/PCA-Faces/thresholded_eigenface_number_1.png Graphic file (type p
+File: figures/PCA-Faces/thresholded_eigenface_number_3.png Graphic file (type p
 ng)
- <use figures/PCA-Faces/thresholded_eigenface_number_1.png>
-Package pdftex.def Info: figures/PCA-Faces/thresholded_eigenface_number_1.png u
+ <use figures/PCA-Faces/thresholded_eigenface_number_3.png>
+Package pdftex.def Info: figures/PCA-Faces/thresholded_eigenface_number_3.png u
 sed on input line 272.
 (pdftex.def)             Requested size: 144.54pt x 108.40472pt.
 
-<figures/SPM-Faces/thresholded_eigenface_number_1.png, id=49, 578.16pt x 433.62
+<figures/SPM-Faces/thresholded_eigenface_number_5.png, id=49, 578.16pt x 433.62
 pt>
-File: figures/SPM-Faces/thresholded_eigenface_number_1.png Graphic file (type p
+File: figures/SPM-Faces/thresholded_eigenface_number_5.png Graphic file (type p
 ng)
- <use figures/SPM-Faces/thresholded_eigenface_number_1.png>
-Package pdftex.def Info: figures/SPM-Faces/thresholded_eigenface_number_1.png u
+ <use figures/SPM-Faces/thresholded_eigenface_number_5.png>
+Package pdftex.def Info: figures/SPM-Faces/thresholded_eigenface_number_5.png u
 sed on input line 273.
 (pdftex.def)             Requested size: 144.54pt x 108.40472pt.
 
-<figures/IPCA-Faces/thresholded_eigenface_number_1.png, id=50, 578.16pt x 433.6
+<figures/IPCA-Faces/thresholded_eigenface_number_3.png, id=50, 578.16pt x 433.6
 2pt>
-File: figures/IPCA-Faces/thresholded_eigenface_number_1.png Graphic file (type 
+File: figures/IPCA-Faces/thresholded_eigenface_number_3.png Graphic file (type 
 png)
- <use figures/IPCA-Faces/thresholded_eigenface_number_1.png>
-Package pdftex.def Info: figures/IPCA-Faces/thresholded_eigenface_number_1.png 
+ <use figures/IPCA-Faces/thresholded_eigenface_number_3.png>
+Package pdftex.def Info: figures/IPCA-Faces/thresholded_eigenface_number_3.png 
 used on input line 274.
 (pdftex.def)             Requested size: 144.54pt x 108.40472pt.
 
-<figures/MSG-Faces/thresholded_eigenface_number_1.png, id=51, 578.16pt x 433.62
+<figures/MSG-Faces/thresholded_eigenface_number_4.png, id=51, 578.16pt x 433.62
 pt>
-File: figures/MSG-Faces/thresholded_eigenface_number_1.png Graphic file (type p
+File: figures/MSG-Faces/thresholded_eigenface_number_4.png Graphic file (type p
 ng)
- <use figures/MSG-Faces/thresholded_eigenface_number_1.png>
-Package pdftex.def Info: figures/MSG-Faces/thresholded_eigenface_number_1.png u
+ <use figures/MSG-Faces/thresholded_eigenface_number_4.png>
+Package pdftex.def Info: figures/MSG-Faces/thresholded_eigenface_number_4.png u
 sed on input line 275.
 (pdftex.def)             Requested size: 144.54pt x 108.40472pt.
 
-<figures/SVDPCA-Faces/thresholded_eigenface_number_1.png, id=52, 578.16pt x 433
+<figures/SVDPCA-Faces/thresholded_eigenface_number_5.png, id=52, 578.16pt x 433
 .62pt>
-File: figures/SVDPCA-Faces/thresholded_eigenface_number_1.png Graphic file (typ
+File: figures/SVDPCA-Faces/thresholded_eigenface_number_5.png Graphic file (typ
 e png)
- <use figures/SVDPCA-Faces/thresholded_eigenface_number_1.png>
-Package pdftex.def Info: figures/SVDPCA-Faces/thresholded_eigenface_number_1.pn
+ <use figures/SVDPCA-Faces/thresholded_eigenface_number_5.png>
+Package pdftex.def Info: figures/SVDPCA-Faces/thresholded_eigenface_number_5.pn
 g used on input line 276.
 (pdftex.def)             Requested size: 144.54pt x 108.40472pt.
 
@@ -671,11 +671,11 @@ Underfull \hbox (badness 1292) in paragraph at lines 369--370
 
 [7
 
- <./figures/PCA-Faces/thresholded_eigenface_number_1.png (PNG copy)> <./figures
-/SPM-Faces/thresholded_eigenface_number_1.png (PNG copy)> <./figures/IPCA-Faces
-/thresholded_eigenface_number_1.png (PNG copy)> <./figures/MSG-Faces/thresholde
-d_eigenface_number_1.png (PNG copy)> <./figures/SVDPCA-Faces/thresholded_eigenf
-ace_number_1.png (PNG copy)> <./figures/SPCA-Faces/thresholded_eigenface_number
+ <./figures/PCA-Faces/thresholded_eigenface_number_3.png (PNG copy)> <./figures
+/SPM-Faces/thresholded_eigenface_number_5.png (PNG copy)> <./figures/IPCA-Faces
+/thresholded_eigenface_number_3.png (PNG copy)> <./figures/MSG-Faces/thresholde
+d_eigenface_number_4.png (PNG copy)> <./figures/SVDPCA-Faces/thresholded_eigenf
+ace_number_5.png (PNG copy)> <./figures/SPCA-Faces/thresholded_eigenface_number
 _1.png (PNG copy)>] [8 <./figures/PCA-Faces/face sample reconstructed with 5 PC
 s.png (PNG copy)> <./figures/SPM-Faces/face sample reconstructed with 5 PCs.png
  (PNG copy)> <./figures/IPCA-Faces/face sample reconstructed with 5 PCs.png (PN
@@ -722,7 +722,7 @@ ts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2013/texmf-dist
 ype1/urw/times/utmb8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/t
 imes/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmri
 8a.pfb>
-Output written on naaclhlt2010.pdf (9 pages, 1310605 bytes).
+Output written on naaclhlt2010.pdf (9 pages, 1311347 bytes).
 PDF statistics:
  143 PDF objects out of 1000 (max. 8388607)
  77 compressed objects within 1 object stream
