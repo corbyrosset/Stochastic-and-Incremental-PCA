@@ -10,17 +10,19 @@
 
 function U = msg(X, k)
 
-    X = X';               % to make things work. X is matrix of [0, 255]
-%     X = normc(X); %OH GOD
-    iters = 7;              % how many times to loop over entire training set
+    X = X';                 % to make things work. X is matrix of [0, 255]
+    iters = 75;             % how many times to loop over entire training set
     t = 0;                  % iterate
     n = size(X, 2);         % number of examples
     d = size(X, 1);         % dimensionality
     U = zeros(d, 1);        % provably better accuracy with all zeros initial
     S = zeros(1, 1);        % both U and S will grow larger...
+    etas = [10];
     eta = sqrt(k/(n*iters));% seems to be good enough eta
     epsilon = 0.000001;         % don't know what the significance of this is...
     warning('off','all');   %because it clutters screen as matrix initializes
+    error = 10;
+    tempError = 10;
    
     if(size(X, 1) ~= 32256)           %obviously change
        size(X)
@@ -32,13 +34,19 @@ function U = msg(X, k)
         X(:,randperm(size(X,2)));         %good practice to shuffle:
         for t = 1:n; 
            x = X(:, t);
-           
+           eta = etas(1)/nthroot((i-1)*n + t, 2);
            [U,S] = msg_update(k,U,S,eta,x,epsilon);
            if (sum(S) > 1)
                [U, S] = msgsample(k, U, S);   
            end
            if (rank(U) > k + 20) %why +20?, bc this happens quite often
                [U, S] = msgsample(k, U, S);
+           end
+           if (mod(t, 300) == 0)
+                   error = tempError;
+                   tempError = calcError(U, X);
+                   fprintf('--train error: %d, diff: %d, eta: %d\n', ...
+                       tempError, abs(error - tempError), eta); 
            end
            waitbar((n*(i-1) + t)/(iters*n),h);
         end
@@ -52,56 +60,10 @@ function U = msg(X, k)
     close(h);
     
 end
-% function sigma = project(d, k, n, sigma, kappa)
-%     
-%     [sigma, I] = sort(sigma, 'descend')
-%     kappa = kappa(I); %also re-sort these
-%     
-%     fprintf('size of sigma in project: %d\n', length(sigma));
-%     if (length(sigma) <= 2)
-%         sigma
-%         error('sigma is only one in project()!');
-%     end
-%     
-%     i   = 1;
-%     j   = 1;
-%     s_i = 0;
-%     s_j = 0;
-%     c_i = 0;
-%     c_j = 0;
-%     S   = 0;
-%     
-%     while i <= n
-%         if (i < j)
-%            S = (k - (s_j - s_i) - (d - c_j))/(c_j - c_i)
-%            b = ((sigma(i) + S >= 0) && (sigma(j-1) + S <= 1)...
-%                  && ((i <= 1) || (sigma(i - 1) + S <= 0))...
-%                  && ((j >= n) || (sigma(j+1) >= 1)));
-%            if (b == true)
-%                S
-%                for i = 1:length(sigma)
-%                     sigma(i) = max(0, min(1, sigma(i) - S));
-%                end
-%                display('returned properly');
-%                return;
-%            end
-%         end
-%         if ( (j <= n) && (sigma(j) - sigma(i) <= 1))
-%             s_j = s_j + kappa(j)*sigma(j);
-%             c_j = c_j + kappa(j);
-%             j = j + 1;
-%         else
-%            s_i = s_i + kappa(i)*sigma(i);
-%            c_i = c_i + kappa(i);
-%            i = i + 1;
-%         end
-%             
-%     end
-%     error('projection did  NOT occur properly');
-%     
-%     
-% 
-% end
+
+function obj = calcError(U, X) 
+    obj = norm(X - U*(U'*X)); %trace((U'*X)*(X'*U)); %norm(X) - norm(U'*X); 
+end
 
 function X = candN(X)
     mean = sum(X, 2)/size(X, 2);

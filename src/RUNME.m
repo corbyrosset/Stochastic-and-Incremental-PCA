@@ -46,7 +46,7 @@ varsvdpca = 0;
 global varspca;
 varspca = 0;
 global maxDimension; %VERY IMPORTANT, but only for sparse PCA...
-maxDimension = 1200; %why this can't be on the above line is beyond me...
+maxDimension = 10000; %why this can't be on the above line is beyond me...
 maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
 %because some algorithms run in O(d*k^2) PER EXAMPLE
 global meantrain;
@@ -83,16 +83,25 @@ meantest = [];
 % dev = (1/255)*dev;
 % test = (1/255)*test;
 
-[train, meantrain] = candN(train);
-[dev, meandev] = candN(dev);
-[test, meantest] = candN(test);
+% [train, meantrain] = candN(train);
+% [dev, meandev] = candN(dev);
+% [test, meantest] = candN(test);
+
+% center and normalize all examples at once
+all = [train, dev, test];
+all = candN(all);
+train = all(:, 1:size(train, 2));
+dev = all(:, (size(train, 2) + 1):(size(train, 2) + size(dev, 2)));
+test = all(:, (size(train, 2) + size(dev, 2) + 1): end);
+
+
 
 dataVariance = calcVariance([], train)
 setGlobalx(floor(rand(1) *size(train,2))+1);
 
 display('training KNN on subspace learned by built-in pca'); %DONE
 tic;
-  [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA, ~] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
+%   [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA, ~] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
 timepca = toc;
 display('done');
 
@@ -194,8 +203,10 @@ function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels
     if (isequal(fcnHandle, @pca))
        U = fcnHandle(train'); 
     elseif (isequal(fcnHandle, @spca))
-        [B SV L D PATHS] = spca(train', [], maxK, inf, -1200);
+        [B SV L D PATHS] = spca(train', [], maxK, inf, -10000);
         U = B;
+    elseif (isequal(fcnHandle, @spm))
+        U = spm(train', dev, maxK);
     else
        U = fcnHandle(train', maxK); %learn the full uncorrelated subspace via algo
     end
@@ -204,6 +215,9 @@ function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels
         size(train)
         size(U)
         error('U not properly sized');
+    end
+    if (size(U, 2) ~= maxK)
+        error('U does not have maxK components');
     end
     
     %begin hyperparameter tuning
@@ -277,7 +291,7 @@ function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels
         title('Accuracy of KNN trained on subspace learned by MSG');
         hold off;
         print(fig,'cross-val-MSG','-dpng');
-        
+%         
         %plot variance captured by each principle component
         [var, vararray] = calcVariance(U, train);
         f = figure;
@@ -413,7 +427,7 @@ end
 function [im, im2] = eigenface(U_k)
 
     s = U_k; 
-    s = (s + abs(min(s)))/(max(s)); %rescale
+    s = (s + abs(min(s)))/(abs(max(s))); %rescale
     im = reshape(s, 192, 168);
     
     
