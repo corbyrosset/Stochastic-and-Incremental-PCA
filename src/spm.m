@@ -27,41 +27,37 @@ function U = spm(X, Xdev, k)
     n = size(X, 2);       % number of examples
     d = size(X, 1);       % dimensionality
     U = orth(rand(d, k)); % randomly init learned subspace
-    eta = 10;
-    etas = [10] %[5E-6]; [1E-10, 1E-7, 1E-4, 0.001, 0.01, 0.1, 0.5, 1.0, 5, 10];              % learning rate, set to what??
+    etas = [10];           %can try others...            
     bestEta = 0;
     error = 10;
     tempError = 0;
     trainError = 10;
     
-    if(size(X, 1) ~= 32256)          %obviously change for B dataset
+    if(size(X, 1) ~= 32256)         
        size(X)
        error('SPA: bad input');
     end
     for j = 1:length(etas)
         eta = etas(j);
         h = waitbar(0,'Waiting for Stochasic Power Method...');
-%         for i = 1:iters
         tempError = calcError(U, Xdev)
-        while(i < iters && abs(error - tempError) > 0.5) %abs(tempError - error) > 0.001 && error > 6) 
+        while(i < iters && abs(error - tempError) > 0.5) %converged?
             fprintf('----iteration %d\n', i);    
-            X(:,randperm(size(X,2)));            %good practice to shuffle:
+            X(:,randperm(size(X,2)));                    %shuffle:
             for t = 1:n;
-                eta = etas(j)/nthroot((i-1)*n + t, 2);  %perhaps?
+                eta = etas(j)/nthroot((i-1)*n + t, 2);   %good heuristic
                 x = X(:, t);
                 U = U + eta*x*(x'*U);
                 if (mod(t, 5) == 0)
-                    [U,~] = qr(U, 0);             %do more sparingly...
+                    [U,~] = qr(U, 0);                    %do QR sparingly
                 end
                 if (mod(t, 300) == 0)
                    error = tempError;
                    tempError = calcError(U, Xdev);
                    trainError = calcError(U, X);
-                   fprintf('--train error: %d, dev error: %d, diff: %d, eta: %d\n', ...
+                   fprintf('train error: %d, dev error: %d, diff: %d, eta: %d\n', ...
                        trainError, tempError, abs(error - tempError), eta); 
-%                    checkFiniteDifference(U, x);
                 end
-%                 waitbar((n*(i-1) + t)/(iters*n),h)
             end
             [U,~] = qr(U, 0);
             i = i + 1;
@@ -73,19 +69,11 @@ function U = spm(X, Xdev, k)
 
 end
 
-function obj = calcError(U, X) 
-    obj = norm(X - U*(U'*X)); %trace((U'*X)*(X'*U)); %norm(X) - norm(U'*X); 
-end
 
-% function checkFiniteDifference(U, x)
-%     R = rand(size(U));
-%     if (norm(x*(x'*U)) - norm(x*(x'*(U + 0.001*R))) > norm(0.001*R))
-%         fprintf('norm of gradient %d\n', norm(x*(x'*U)));
-%         fprintf('norm of perturbed gradient and difference %d\n', norm(x*(x'*(U + 0.001*R))));
-%         error('diverging gradients\n');
-%     end
-%     
-% end
+%% empirical error is defined to be reconstruction error
+function obj = calcError(U, X) 
+    obj = norm(X - U*(U'*X)); 
+end
 
 %% Manual QR just in case built-in tried to take matrix products...
 function [Q,R] = QR(A)

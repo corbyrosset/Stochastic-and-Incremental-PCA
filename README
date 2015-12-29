@@ -1,0 +1,1 @@
+This is library written for a final project. It contains various methods for stochastic and incremental PCA algorithms (as well as an off-the-shelf sparse PCA algorithm for comparison). Run the algorithms you deem fit by commenting out lines 75 to 110 in RUNME.ms script. See the finalReport/ for a paper written about the algorithms and their results.

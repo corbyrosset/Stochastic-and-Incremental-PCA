@@ -3,13 +3,11 @@
 %<http://vision.ucsd.edu/~leekc/ExtYaleDatabase/ExtYaleB.html> which might
 %actually be too big to fit in memory...
 
-%Note it would be disastrous if at any point we were to store the
-%covariance matrix. Instead, we will use computational tricks of outer
-%products and the like to avoid it. 
+%Note it would be disastrous if at any point we were to store a dxd matrix
+%(and its also not preferable to store a covariance matrix either, although
+%for this small dataset we could). Instead, we will use computational 
+%tricks of outer products and the like to avoid it. 
 
-%WARNING: the built-in pca() already centers and normalizes the data, doing
-%so before calling pca() would result in an empty matrix!
-%
 
 
 function [] = RUNME()
@@ -45,16 +43,13 @@ global varsvdpca;
 varsvdpca = 0;
 global varspca;
 varspca = 0;
-global maxDimension; %VERY IMPORTANT, but only for sparse PCA...
-maxDimension = 10000; %why this can't be on the above line is beyond me...
-maxK      = 80; %VERY IMPORTANT must be significantly less than dimensionality
-%because some algorithms run in O(d*k^2) PER EXAMPLE
+global maxDimension; 
+maxDimension = 10000; 
+maxK      = 80; %must be significantly less than n or d
 global meantrain;
 global meandev;
 global meantest;
 global dataVariance;
-
-
 meantrain = [];
 meandev = [];
 meantest = [];
@@ -67,57 +62,35 @@ meantest = [];
         readYaleBPlusData('../data/CroppedYale/', 20, 20, 60);
 
 
-%% plot training data onto top two principle components to "see" how good
-%covariance matrix is 77760x77760 (45.1GB)
-
-% U = pca(train');    %I think this uses stochastic pca anyway...
-% top_2 = U(:, 1:2);  %first two columns are top two principle components
-% C = top_2'*train;
-% C = candN(C);       %we should really do this earlier
-% C = C';
-% scatter(C(:, 1), C(:, 2), 9, trainlabels);
-
-
 %% train KNN model on data projected onto learned subspace
-% train = (1/255)*train;
-% dev = (1/255)*dev;
-% test = (1/255)*test;
-
-% [train, meantrain] = candN(train);
-% [dev, meandev] = candN(dev);
-% [test, meantest] = candN(test);
-
-% center and normalize all examples at once
+% center and normalize all examples at once, calculate data variance
 all = [train, dev, test];
 all = candN(all);
 train = all(:, 1:size(train, 2));
 dev = all(:, (size(train, 2) + 1):(size(train, 2) + size(dev, 2)));
 test = all(:, (size(train, 2) + size(dev, 2) + 1): end);
-
-
-
 dataVariance = calcVariance([], train)
 setGlobalx(floor(rand(1) *size(train,2))+1);
 
-display('training KNN on subspace learned by built-in pca'); %DONE
+display('training KNN on subspace learned by built-in pca'); 
 tic;
-%   [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA, ~] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
+  [U_k, bestKPCA, bestNPCA, testAccuracySubspacePCA, ~] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @pca);
 timepca = toc;
 display('done');
 
-display('training KNN on subspace learned by stochastic power method'); %DONE
+display('training KNN on subspace learned by stochastic power method'); 
 tic;
  [U_k, bestKSPM, bestNSPM, testAccuracySubspaceSPM, varspm] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @spm);
 timespm = toc;
 display('done');
 
-display('training KNN on subspace learned by incremental ipca'); %DONE
+display('training KNN on subspace learned by incremental ipca'); 
 tic;
  [U_k, bestKIPCA, bestNIPCA, testAccuracySubspaceIPCA, varipca] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @ipca);
 timeipca = toc;
 display('done');
 
-display('training KNN on subspace learned by MSG - may take up to 10 mins'); %DONE
+display('training KNN on subspace learned by MSG - may take up to 30 mins'); 
 tic;
  [U_k, bestKMSG, bestNMSG, testAccuracySubspaceMSG, varmsg] = trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, @msg);
 timemsg = toc;
@@ -136,34 +109,13 @@ timespca = toc;
 display('done');
 
 
-%% train Tree-bagged model with subspaces learned by above algorithms
-% display('training bagged tree on subspace');
-% mdlLearned2 = TreeBagger(20,train',trainlabels);
-%testing:
-%[predictedLabelsTest2, ~] = predict(mdlLearned2,test');
-%predictedLabelsTest2 = cellfun(@str2num, predictedLabelsTest2);
-%testAccuracySubspace2 = sum(predictedLabelsTest2 == testlabels')/length(predictedLabelsTest2);
-
-
-%% train and test model on full-dimensional training data for comparison. 
-%MODEL1: KNN: Only hyperparameter is numneighbors
+%% train and test model on raw data. 
 display('training KNN with ALL dimensions');
 mdlAll1 = fitcknn(train', trainlabels, 'NumNeighbors', 1);
-%testing:
 [predictedLabelsTest1, ~] = predict(mdlAll1, test');
 testAccuracyAll1 = sum(predictedLabelsTest1 == testlabels')/length(predictedLabelsTest1);
 
-%MODEL2: bagged trees: numtrees (default 500)
-% display('training bagged tree');
-% mdlAll2 = TreeBagger(20,train',trainlabels);
-%testing:
-% [predictedLabelsTest2, ~] = predict(mdlAll2,test');
-% predictedLabelsTest2 = cellfun(@str2num, predictedLabelsTest2);
-% testAccuracyAll2 = sum(predictedLabelsTest2 == testlabels')/length(predictedLabelsTest2);
-
-
 %% output results
-
 fprintf('accuracy of %d-dim subspace on %d-NN learned by PCA: %f in time %f with captured variance %d\n',...
     bestKPCA, bestNPCA, testAccuracySubspacePCA, timepca, dataVariance);
 fprintf('accuracy of %d-dim subspace on %d-NN learned by SPM: %f in time %f with captured variance %d\n',...
@@ -176,10 +128,7 @@ fprintf('accuracy of %d-dim subspace on %d-NN learned by SVD PCA: %f in time %f 
     bestKSVDPCA, bestNSVDPCA, testAccuracySubspaceSVDPCA, timesvdpca, varsvdpca );
 fprintf('accuracy of %d by %d-dim subspace on %d-NN learned by SPCA: %f in time %f with captured variance %d\n',...
     maxDimension, bestKSPCA,  bestNSPCA, testAccuracySubspaceSPCA, timespca, varspca);
-
-% fprintf('accuracy of %d-dim subspace on BaggedTree: %d\n', bestK, testAccuracySubspace2);
 fprintf('accuracy of entire data on KNN: %f\n', testAccuracyAll1);
-% fprintf('accuracy of entire data on BaggedTree: %d\n', testAccuracyAll2);
 
 
 end
@@ -190,9 +139,9 @@ function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels
     devAc     = [];
     bestK     = 0;
     bestAcc   = 0;
-    N         = [1]; %[1, 2, 4, 8, 16];  %JUST USE K = 1 BC THAT'S BEST
+    N         = [1]; %[1, 2, 4, 8, 16];  %can try others...
     maxN      = 10;
-    bestN     = 3;   %actually tune this hyperparameter as well
+    bestN     = 3;   %tune this hyperparameter as well
     neighbors = 1;   %neighbors = 1:maxN:
     d         = size(train', 2);
     var       = 0;
@@ -211,6 +160,7 @@ function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels
        U = fcnHandle(train', maxK); %learn the full uncorrelated subspace via algo
     end
     
+    % sanity checks after learning U
     if (size(U, 1) ~= size(train, 1))
         size(train)
         size(U)
@@ -223,7 +173,7 @@ function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels
     %begin hyperparameter tuning
     for neighbors = 1:length(N);
         for k = 1:maxK 
-            top_k = U(:, 1:k); %first two columns are top two principle components
+            top_k = U(:, 1:k); %top k principle components
             C = top_k'*train;  %k by n
             devTest = top_k'*dev;
 
@@ -242,6 +192,7 @@ function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels
             end
         end
     end
+    
     %plot graphs of accuracy vs dimension of learned subspace
     fig = figure;
     plot(devAc); hold on;
@@ -290,8 +241,8 @@ function [U, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels
     elseif (isequal(fcnHandle, @msg))
         title('Accuracy of KNN trained on subspace learned by MSG');
         hold off;
-        print(fig,'cross-val-MSG','-dpng');
-%         
+        print(fig,'cross-val-MSG','-dpng');   
+        
         %plot variance captured by each principle component
         [var, vararray] = calcVariance(U, train);
         f = figure;
@@ -354,7 +305,8 @@ function [U_k, bestK, bestN, testAccuracy, var, vararray] = ...
 trainAndTestKNN(train, trainlabels, dev, devlabels, test, testlabels, maxK, fcnHandle)
     var = 0;
     vararray = [];
-    [U_k, bestK, bestN, chngdir, var, vararray] = crossVal(train, trainlabels, dev, devlabels, maxK, fcnHandle);
+    [U_k, bestK, bestN, chngdir, var, vararray] = crossVal(train, ...
+        trainlabels, dev, devlabels, maxK, fcnHandle);
     
     randface = getGlobalx();
     sample = train(: ,randface);
@@ -400,11 +352,9 @@ function r = getGlobalx
     r = x;
 end
 
-%reconstruct a face using different numbers of the principle 
-%components from the learned subspace
+%% reconstruct a face using different numbers of the principle 
+%  components from the learned subspace
 function [reconstructed_face] = reconstruct(sample, U_k) 
-
-    
     original = reshape(sample, 192, 168);
     for k = 1:6 
         ff = figure;
@@ -424,19 +374,22 @@ function [reconstructed_face] = reconstruct(sample, U_k)
 
 end
 
+%% show some of the learned eigenfaces, also threshold them for comparison
+%  to sparse pca
 function [im, im2] = eigenface(U_k)
 
     s = U_k; 
     s = (s + abs(min(s)))/(abs(max(s))); %rescale
     im = reshape(s, 192, 168);
-    
-    
+     
     %only keep components of the principle eigenvector with most weight
     throwout = find(s < (mean(s) + std(s)));
     s(throwout) = 0;
     im2 = reshape(s, 192, 168); 
 end
 
+%% variance of raw data matrix is trace(XX'), variance of subspace is 
+%  trace(YY') for Y = U'X, where U was learned by the algorithms
 function [v, array] = calcVariance(U, X)
     v = 0;
     array = [];

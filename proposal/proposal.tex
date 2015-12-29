@@ -38,16 +38,17 @@ Also, the pairing of PCA and KNN is ideal because learning a lower dimensional s
 
 
 \section{Resources}
-In order to compare the performance we will download several (about 5) random datasets from the University of California Irvine (UCI) dataset repository. We will implement the PCA algorithms from well-known publications. Because we have a need for fast linear algebra computations, we use Matlab. Matlab also has a built-in KNN library that we will use for all testing of KNN. Matlab will also be used to implement the various PCA algorithms, mainly due to its linear algebra library. 
+For our data we will use the Extended Yale Face Dataset B \\ 
+(http://vision.ucsd.edu/~leekc/ExtYaleDatabase/ExtYaleB.html) for testing purposes. This dataset includes thousands of pictures of 28 people in different poses and lighting conditions. Each picture has thousands of features, namely the pixels. This seems like a good dataset to use since we can classify based on person, something that KNN is useful for, and we can see how well that works with reducing the feature set from thousands to 20-30 features, so that KNN can do well. In addition we will develop on the Yale Face Dataset B that is a smaller set of different faces (http://vision.ucsd.edu/content/yale-face-database).  We will implement the PCA algorithms from well-known publications. Because we have a need for fast linear algebra computations, we use Matlab. Matlab also has a built-in KNN library that we will use for all testing of KNN. Matlab will also be used to implement the various PCA algorithms, mainly due to its linear algebra library. 
 
 
 \section{Milestones}
 \subsection{Must achieve}
-A comparison of normal PCA, power iteration PCA, and Stochastic Power Iteration on KNN classifiers with hyperparameter tuning to find the optimal neighbors and learned subspace dimension. Because it is known that power iteration converges arbitrarily close to the same solution as eigendecomposition-based PCA, we can use that to confirm our other algorithms  are on the right track. 
+A comparison of power iteration PCA and Stochastic Power Iteration on KNN classifiers with hyperparameter tuning to find the optimal neighbors and learned subspace dimension. Because it is known that power iteration converges arbitrarily close to the same solution as eigendecomposition-based PCA, we can use that to confirm our other algorithms  are on the right track. 
 \subsection{Expected to achieve}
 A comparison of the previously mentioned PCA methods on KNN in addition to incremental PCA, online PCA,  and possibly capped MSG.
 \subsection{Would like to achieve}
-A comparison of previously mentioned PCA methods on other classifiers, such as SVM or decision trees. We would also like to try to add comparisons for other PCA methods if possible, such as online PCA. We would also like to try approximations to Kernel PCA as well. 
+A comparison of previously mentioned PCA methods on other classifiers, such as SVM or decision trees. We would also like to try to add comparisons for other PCA methods if possible, such as online PCA. We would also like to try approximations to Kernel PCA as well. Also if possible we would like to try to add a normal eigendecomposition PCA, but this may not be possible due to limitations of what can be fit into memory.
 
 \section{Final Writeup}
 We will give a brief description of what each algorithm is and if applicable derive some performance bounds on the algorithm. Many of these algorithms are equipped with iteration bounds for a given convergence threshold that depends on the eigengap between eigenvectors, for instance. We will directly compute and compare the cost of an incremental update for each algorithm. We will also discuss some caveats and tradeoffs of each algorithm. For example, Incremental PCA can fail under certain adversarially chosen inputs. 

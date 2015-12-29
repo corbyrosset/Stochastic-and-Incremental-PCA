@@ -6,7 +6,9 @@
 
 % update of the form P^(t) = P_{trace(P) = k, P<= I}(P^(t-1) + \eta_t*x*x^T)
 % but stored in the form of an singular value decomposition of the 
-% covariance (2nd moment) matrix as so:
+% covariance (2nd moment) matrix.
+
+% Depends on msgupdate.m and msgsample.m
 
 function U = msg(X, k)
 
@@ -19,12 +21,12 @@ function U = msg(X, k)
     S = zeros(1, 1);        % both U and S will grow larger...
     etas = [10];
     eta = sqrt(k/(n*iters));% seems to be good enough eta
-    epsilon = 0.000001;         % don't know what the significance of this is...
-    warning('off','all');   %because it clutters screen as matrix initializes
+    epsilon = 0.000001;     
+    warning('off','all');   %because it clutters screen
     error = 10;
     tempError = 10;
    
-    if(size(X, 1) ~= 32256)           %obviously change
+    if(size(X, 1) ~= 32256)         
        size(X)
        error('IPCA: bad input');
     end
@@ -39,10 +41,12 @@ function U = msg(X, k)
            if (sum(S) > 1)
                [U, S] = msgsample(k, U, S);   
            end
-           if (rank(U) > k + 20) %why +20?, bc this happens quite often
-               [U, S] = msgsample(k, U, S);
+           
+           %magic number +20?, bc this happens quite often and can blow up
+           if (rank(U) > k + 20) 
+               [U, S] = msgsample(k, U, S); %so take top k components again
            end
-           if (mod(t, 300) == 0)
+           if (mod(t, 300) == 0)                %output some progress
                    error = tempError;
                    tempError = calcError(U, X);
                    fprintf('--train error: %d, diff: %d, eta: %d\n', ...
@@ -61,14 +65,9 @@ function U = msg(X, k)
     
 end
 
-function obj = calcError(U, X) 
-    obj = norm(X - U*(U'*X)); %trace((U'*X)*(X'*U)); %norm(X) - norm(U'*X); 
-end
 
-function X = candN(X)
-    mean = sum(X, 2)/size(X, 2);
-    stdtrain = std(X');
-    Xcenter = bsxfun(@minus, X, mean);
-    X = bsxfun(@rdivide, Xcenter, stdtrain');
+%% variance defined as reconstruction error
+function obj = calcError(U, X) 
+    obj = norm(X - U*(U'*X));
 end
 

@@ -1,7 +1,5 @@
-function [train, trainlabels, test, testlabels, dev, devlabels] = readYaleBPlusData(directory, devpercent, testpercent, trainpercent)
-%IMPORTFILE(FILETOREAD1)
-%  Imports data from the specified file
-%  FILETOREAD1:  file to read
+function [train, trainlabels, test, testlabels, dev, devlabels] = ...
+    readYaleBPlusData(directory, devpercent, testpercent, trainpercent)
 
 %output: X a d by n matrix, d the dimension of each image flattened,
 % n the number of images
