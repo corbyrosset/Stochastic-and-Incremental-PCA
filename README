@@ -1,3 +1,3 @@
-This library contains nearly all the state of the art methods for stochastic and incremental PCA algorithms (as well as an off-the-shelf sparse PCA algorithm for comparison). Run the algorithms you deem fit by commenting out lines 75 to 110 in RUNME.ms script. See the finalReport/ for a paper written about the algorithms and their results. Figures can also be found in the finalProject/ directory.
+This library contains nearly all the state of the art methods for stochastic and incremental PCA algorithms (as well as an off-the-shelf sparse PCA algorithm for comparison). Run the algorithms you deem fit by commenting out lines 75 to 110 in RUNME.m script in the src/ directory. See the finalReport/ for a paper written about the algorithms and their results. Figures can also be found in the finalProject/ directory.
 
 Corbin Rosset and Edmund Duhaime
